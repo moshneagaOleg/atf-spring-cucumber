@@ -11,8 +11,11 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import io.cucumber.core.api.Scenario;
+import io.cucumber.java.After;
 import io.cucumber.java.Before;
-import io.tpd.springbootcucumber.bagcommons.Config;
+import io.tpd.springbootcucumber.SpringBootCucumberApplication;
+import io.tpd.springbootcucumber.Config;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -25,7 +28,7 @@ import org.springframework.core.env.Environment;
 import java.util.List;
 import java.util.function.Supplier;
 
-@SpringBootTest()
+@SpringBootTest(classes = SpringBootCucumberApplication.class)
 public class StepDefinitions {
 
     private final Logger log = LoggerFactory.getLogger(StepDefinitions.class);
@@ -37,17 +40,18 @@ public class StepDefinitions {
     private Environment environment;
 
     private WebDriver webDriver;
+
     private WGU wgu;
 
     @Given("user open page {string}")
     public void userOpenPage(String pageName) {
-        AbstractPage page = new PageCreator(webDriver).getPage(pageName);
+        AbstractPage page = new PageCreator(webDriver, config.getBaseUrl()).getPage(pageName);
         page.open();
     }
 
     @When("user is on the {string} page")
     public void userIsOnThePage(String pageName) {
-        AbstractPage page = new PageCreator(webDriver).getPage(pageName);
+        AbstractPage page = new PageCreator(webDriver, config.getBaseUrl()).getPage(pageName);
         LoggingAssert.assertTrue(String.format("User is on the '%s' page", pageName),
                 WaitUtils.waitUntilCondition(page::isCurrentPage, true, 30));
     }
@@ -74,17 +78,23 @@ public class StepDefinitions {
     @Before
     public void openBrowser() {
         webDriver = DriverFactory.openBrowser();
+        // FIXME: 1/25/2020 by active profile init app from reflection
         wgu = WGU.initApp(webDriver);
-        String url = config.getUrl();
-        String name = config.getName();
-        String commonPassword = config.getCommonPassword();
-        String basicUser = config.getBasicUser();
-        System.out.println();
-//        wgu = WGU.initApp(webDriver);
-//        webDriver.get(config.getUrl());
     }
 
-    public Boolean waitForMessage(Supplier<List<YandexElement>> webElements, String msg, int secondsTimeout) {
+    @After
+    public void closeBrowser(Scenario scenario) {
+        if (scenario.isFailed()) {
+            scenario.getName();
+        }
+        if (webDriver != null) {
+            webDriver.close();
+            webDriver.quit();
+            log.info("Browser was closed");
+        }
+    }
+
+    private Boolean waitForMessage(Supplier<List<YandexElement>> webElements, String msg, int secondsTimeout) {
         Supplier<Boolean> messageIsPresent = () -> {
             for (WebElement webElem : webElements.get()) {
                 if (StringUtils.contains(webElem.getText(), msg)) {
@@ -95,28 +105,5 @@ public class StepDefinitions {
         };
         return WaitUtils.waitUntilCondition(messageIsPresent, true, secondsTimeout);
     }
-
-
-
-//    @When("user login on the page")
-//    public void userLoginOnThePage() {
-//        wgu.login().emailInp.sendKeys("auto+wgu-api-45778982010878@straighterline.com");
-//        wgu.login().passwordInp.sendKeys("Secretpwd@1");
-//        wgu.login().continueBtn.click();
-//    }
-//
-//    @And("user logOut")
-//    public void userLogOut() {
-//        wgu.waitForClickable(wgu.mainMenuAuth().photoBtn, 10).click();
-//        wgu.waitForClickable(wgu.mainMenuAuth().logoutLnk, 10).click();
-//    }
-
-
-//    @cucumber.api.java.en.When("^I put (\\d+) (\\w+) in the bag$")
-//    public void i_put_something_in_the_bag(final int quantity, final String something) {
-//        String url = config.getUrl();
-//        String name = config.getName();
-//        System.out.println("Buuuyyyyyyy");
-//    }
 
 }

@@ -3,6 +3,7 @@ package core.scanner;
 import core.annotations.PageAccessor;
 import core.element.YandexElement;
 import core.page.AbstractPage;
+import io.tpd.springbootcucumber.Config;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
@@ -14,6 +15,9 @@ import java.util.Set;
 
 public class PageScanner {
 
+//    @Autowired
+//    private static Environment environment;
+
     /**
      * Get element from page object by 'element name' and 'page name' using annotation @Name
      *
@@ -24,8 +28,7 @@ public class PageScanner {
      */
     @SneakyThrows
     public static YandexElement getElementByName(WebDriver driver, String elementName, String pageName) {
-        //todo by tenant %s
-        Reflections reflections = new Reflections("pageObject.wgu");
+        Reflections reflections = new Reflections(String.format("pageObject.%s", Config.TENANT));
         Set<Class<? extends AbstractPage>> classes = reflections.getSubTypesOf(AbstractPage.class);
         for (Class<? extends AbstractPage> pageObject : classes) {
 
@@ -48,7 +51,7 @@ public class PageScanner {
 
     @SneakyThrows
     public static Class<? extends AbstractPage> getPageByName(String pageName) {
-        Reflections reflections = new Reflections("pageObject.wgu");
+        Reflections reflections = new Reflections(String.format("pageObject.%s", Config.TENANT));
         Set<Class<? extends AbstractPage>> classes = reflections.getSubTypesOf(AbstractPage.class);
         for (Class<? extends AbstractPage> pageObject : classes) {
 
@@ -59,5 +62,12 @@ public class PageScanner {
 
         throw new RuntimeException(String.format("Error during getting page by pageName: '%s' is not found ", pageName));
     }
+
+//    /**
+//     * @return ex: wgu, csu, ftk ...
+//     */
+//    private static String getActiveApplication() {
+//        return Arrays.toString(environment.getActiveProfiles()).toLowerCase();
+//    }
 
 }

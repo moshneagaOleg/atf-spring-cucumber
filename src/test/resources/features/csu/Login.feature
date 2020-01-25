@@ -1,4 +1,4 @@
-@Login
+#@Login
 Feature: CSU Login feature
 
   Scenario: CSU Login/LogOut

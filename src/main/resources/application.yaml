@@ -3,30 +3,30 @@ spring:
     active: wgu
 ---
 env.name: qa
+---
 basicUser: auto+wgu-api-45778982010878@straighterline.com
 commonPassword: Secretpwd@1
-
 ---
 spring:
   profiles: wgu
 datasource:
   name: Western Government University
-  url: https://${env.name}.academy.wgu.edu/
+  url: https://${env.name}.academy.wgu.edu
 ---
 spring:
   profiles: csu
 datasource:
   name: Colorado University
-  url: https://${env.name}.csuglobalbridge.straighterline.com/
+  url: https://${env.name}.csuglobalbridge.straighterline.com
 ---
 spring:
   profiles: ftk
 datasource:
   name: Fastrack
-  url: https://${env.name}.brighthorizons.straighterline.net/
+  url: https://${env.name}.brighthorizons.straighterline.net
 ---
 spring:
   profiles: hrz
 datasource:
   name: Horizont
-  url: https://${env.name}.horizons.straighterline.net/
+  url: https://${env.name}.horizons.straighterline.net

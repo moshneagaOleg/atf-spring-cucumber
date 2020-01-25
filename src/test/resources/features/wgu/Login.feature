@@ -1,4 +1,4 @@
-@Login
+#@Login
 Feature: WGU Login feature
 
   Scenario: WGU Login/LogOut

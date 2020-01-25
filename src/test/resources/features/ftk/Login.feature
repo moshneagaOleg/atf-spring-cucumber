@@ -1,4 +1,4 @@
-@Login
+#@Login
 Feature: FTK Login feature
 
   Scenario: FTK Login/LogOut
