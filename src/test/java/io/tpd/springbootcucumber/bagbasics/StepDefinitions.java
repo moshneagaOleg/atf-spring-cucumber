@@ -1,6 +1,6 @@
 package io.tpd.springbootcucumber.bagbasics;
 
-import core.app.WGU;
+import core.app.abstractApps.AbstractStudentPortal;
 import core.assertation.LoggingAssert;
 import core.driver.DriverFactory;
 import core.element.YandexElement;
@@ -41,7 +41,8 @@ public class StepDefinitions {
 
     private WebDriver webDriver;
 
-    private WGU wgu;
+//    private WGU wgu;
+    private AbstractStudentPortal sp;
 
     @Given("user open page {string}")
     public void userOpenPage(String pageName) {
@@ -59,27 +60,28 @@ public class StepDefinitions {
     @Then("user verify {string} message")
     public void userVerifyStringMessage(String message) {
         LoggingAssert.assertTrue(String.format("Message is present '%s'", message),
-                waitForMessage(() -> wgu.successMsgs, message, 15));
+                waitForMessage(() -> sp.successMsgs, message, 15));
     }
 
     @When("user login on the page")
     public void userLoginOnThePage() {
-        wgu.login().emailInp.sendKeys(config.getBasicUser());
-        wgu.login().passwordInp.sendKeys(config.getCommonPassword());
-        wgu.login().continueBtn.click();
+        sp.login().emailInp.sendKeys(config.getBasicUser());
+        sp.login().passwordInp.sendKeys(config.getCommonPassword());
+        sp.login().continueBtn.click();
     }
 
     @And("user logOut")
     public void userLogOut() {
-        wgu.waitForClickable(wgu.mainMenuAuth().photoBtn, 10).click();
-        wgu.waitForClickable(wgu.mainMenuAuth().logoutLnk, 10).click();
+        sp.waitForClickable(sp.mainMenuAuth().photoBtn, 10).click();
+        sp.waitForClickable(sp.mainMenuAuth().logoutLnk, 10).click();
     }
 
     @Before
     public void openBrowser() {
         webDriver = DriverFactory.openBrowser();
         // FIXME: 1/25/2020 by active profile init app from reflection
-        wgu = WGU.initApp(webDriver);
+//        wgu = WGU.initApp(webDriver);
+        sp = AbstractStudentPortal.initApp(webDriver);
     }
 
     @After

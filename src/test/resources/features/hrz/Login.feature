@@ -1,7 +1,7 @@
-#@WGULogin
-Feature: WGU Login feature
+#@HRZLogin
+Feature: HRZ Login feature
 
-  Scenario: WGU Login/LogOut
+  Scenario: HRZ Login/LogOut
     Given user open page 'Login'
     When user login on the page
     And user is on the 'Dashboard' page
