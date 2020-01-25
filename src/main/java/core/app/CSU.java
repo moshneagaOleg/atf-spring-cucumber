@@ -9,7 +9,7 @@ import pageObject.wgu.*;
 
 import java.util.List;
 
-public class WGU extends AbstractPage {
+public class CSU extends AbstractPage {
 
     @FindBy(xpath = "//div[contains(@class,'toasted toasted-primary success')]")
     public List<YandexElement> successMsgs;
@@ -22,13 +22,13 @@ public class WGU extends AbstractPage {
     private Dashboard dashboard = new Dashboard(driver);
     private MainPage mainPage = new MainPage(driver);
 
-    private WGU(WebDriver driver) {
+    private CSU(WebDriver driver) {
         super(driver);
         super.wait = new WebDriverWait(driver, 30);
     }
 
-    public static WGU initApp(WebDriver driver) {
-        return new WGU(driver);
+    public static CSU initApp(WebDriver driver) {
+        return new CSU(driver);
     }
     public Footer footer() {
         return footer.initOnDemand();

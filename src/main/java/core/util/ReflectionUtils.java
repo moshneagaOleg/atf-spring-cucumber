@@ -1,13 +1,16 @@
 package core.util;
 
+import core.app.abstractApps.AbstractStudentPortal;
 import lombok.NonNull;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -76,6 +79,29 @@ public abstract class ReflectionUtils {
             superclass = superclass.getSuperclass();
         }
         return classes;
+    }
+
+    /**
+     * Find in studentPortal (ex: WGU.class) the method with name 'init' and like params put WebDriver.
+     * Run init method (first param the object the underlying method is invoked from) and (second is needed param in
+     * init method).
+     *
+     * @param driver WebDriver
+     * @param studentPortal WGU.class, CSU.class,
+     * @param <T> AbstractStudentPortal
+     * @return AbstractStudentPortal
+     */
+    public static <T extends AbstractStudentPortal> T initStudentPortal(@NonNull WebDriver driver, Class<T> studentPortal) {
+        try {
+            Method init = studentPortal.getMethod("init", WebDriver.class);
+            init.setAccessible(true);
+
+            return (T) init.invoke(studentPortal, driver);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 }
