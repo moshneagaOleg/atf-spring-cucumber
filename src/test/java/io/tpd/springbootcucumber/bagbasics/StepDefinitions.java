@@ -1,12 +1,13 @@
 package io.tpd.springbootcucumber.bagbasics;
 
 import core.app.abstractApps.AbstractStudentPortal;
-import core.assertation.LoggingAssert;
+import core.assertation.STRAssert;
 import core.driver.DriverFactory;
 import core.element.YandexElement;
 import core.factory.PageCreator;
 import core.page.AbstractPage;
 import core.scanner.PageScanner;
+import io.tpd.springbootcucumber.ScenarioContext;
 import core.util.WaitUtils;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -43,7 +44,9 @@ public class StepDefinitions {
 
     private WebDriver webDriver;
 
-//    private WGU wgu;
+    @Autowired()
+    private ScenarioContext scenarioContext;
+
     private AbstractStudentPortal sp;
 
     @Given("user open page {string}")
@@ -55,13 +58,13 @@ public class StepDefinitions {
     @When("user is on the {string} page")
     public void userIsOnThePage(String pageName) {
         AbstractPage page = new PageCreator(webDriver, config.getBaseUrl()).getPage(pageName);
-        LoggingAssert.assertTrue(String.format("User is on the '%s' page", pageName),
+        STRAssert.assertTrue(String.format("User is on the '%s' page", pageName),
                 WaitUtils.waitUntilCondition(page::isCurrentPage, true, 30));
     }
 
     @Then("user verify {string} message")
     public void userVerifyStringMessage(String message) {
-        LoggingAssert.assertTrue(String.format("Message is present '%s'", message),
+        STRAssert.assertTrue(String.format("Message is present '%s'", message),
                 waitForMessage(() -> sp.successMsgs, message, 15));
     }
 
@@ -108,7 +111,7 @@ public class StepDefinitions {
         String xPath = String.format("//*[contains(text(), '%s')]", pageTitle);
         YandexElement title = new YandexElement(webDriver.findElements(By.xpath(xPath)).get(0));
         Boolean titleIsPresent = WaitUtils.waitUntilCondition(title::isPresent, true, 10);
-        LoggingAssert.assertTrue(String.format("Page title is present '%s'", pageTitle), titleIsPresent);
+        STRAssert.assertTrue(String.format("Page title is present '%s'", pageTitle), titleIsPresent);
     }
 
     private Boolean waitForMessage(Supplier<List<YandexElement>> webElements, String msg, int secondsTimeout) {

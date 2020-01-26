@@ -1,6 +1,6 @@
 package core.element;
 
-import core.assertation.LoggingAssert;
+import core.assertation.STRAssert;
 import core.util.WaitUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -43,7 +43,7 @@ public class YandexElement extends TypifiedElement {
 
     private String xPath;
     private static final int ATTEMPTS_NUMBER = 3;
-    protected LoggingAssert loggingAssert = new LoggingAssert();
+    protected STRAssert STRAssert = new STRAssert();
     private Logger logger = LoggerFactory.getLogger(YandexElement.class.getSimpleName());
 
     public YandexElement(WebElement wrappedElement) {
@@ -124,60 +124,60 @@ public class YandexElement extends TypifiedElement {
     }
 
     public void checkIfEquals(String value) {
-        loggingAssert.assertEquals(this.getText(), value, String.format("Validate '%s' text if equals", getName()));
+        STRAssert.assertEquals(this.getText(), value, String.format("Validate '%s' text if equals", getName()));
     }
 
     public void checkIfMatches(String regexp) {
-        LoggingAssert.assertTrue(String.format("Validate '%s' text if matches pattern '%s'", this.getText(), regexp),
+        STRAssert.assertTrue(String.format("Validate '%s' text if matches pattern '%s'", this.getText(), regexp),
                 Pattern.matches(regexp, this.getText()));
     }
 
     public void checkIfEquals(Function<YandexElement, String> function, String value) {
-        loggingAssert.assertEquals(function.apply(this).trim(), value,
+        STRAssert.assertEquals(function.apply(this).trim(), value,
                 String.format("Validate '%s' text if equals", getName()));
     }
 
     public void checkIfContains(String value) {
-        loggingAssert.assertContains(this.getText(), value,
+        STRAssert.assertContains(this.getText(), value,
                 String.format("Validate '%s' text if contained", getName()));
     }
 
     public void checkAttribute(String attributeName, String attributeValue) {
-        loggingAssert.assertContains(getAttribute(attributeName), attributeValue,
+        STRAssert.assertContains(getAttribute(attributeName), attributeValue,
                 String.format("Validate '%s' element attribute '%s' contains value '%s'", getName(), attributeName, attributeValue));
     }
 
     public void isDisplayedAssertion() {
         try {
-            LoggingAssert.assertTrue("Check element '" + getName() + "' is displayed", isDisplayed());
+            STRAssert.assertTrue("Check element '" + getName() + "' is displayed", isDisplayed());
         } catch (NoSuchElementException e) {
             Assert.fail("Element '" + getName() + "' does not exist");
         }
     }
 
     public void isVisibleAssertion() {
-        LoggingAssert.assertTrue("Check element '" + getName() + "' is visible",
+        STRAssert.assertTrue("Check element '" + getName() + "' is visible",
                 isDisplayed() && isVisible());
     }
 
     public void isEnabledAssertion() {
-        LoggingAssert.assertTrue("Check element '" + getName() + "' is enabled", isEnabled());
+        STRAssert.assertTrue("Check element '" + getName() + "' is enabled", isEnabled());
     }
 
     public void isNotEnabledAssertion() {
-        LoggingAssert.assertFalse("Check element '" + getName() + "' is not enabled", !isEnabled());
+        STRAssert.assertFalse("Check element '" + getName() + "' is not enabled", !isEnabled());
     }
 
     public void isNotDisplayedAssertion() {
         if (!isPresent()) {
-            LoggingAssert.assertTrue(String.format("Check element '%s' is not present", getName()), true);
+            STRAssert.assertTrue(String.format("Check element '%s' is not present", getName()), true);
             return;
         }
-        LoggingAssert.assertTrue(String.format("Check element '%s' is not displayed", getName()), !isDisplayed());
+        STRAssert.assertTrue(String.format("Check element '%s' is not displayed", getName()), !isDisplayed());
     }
 
     public void isNotVisibleAssertion() {
-        LoggingAssert.assertFalse(String.format("Check element '%s' is not visible", getName()), !isVisible());
+        STRAssert.assertFalse(String.format("Check element '%s' is not visible", getName()), !isVisible());
     }
 
     public void submit() {
@@ -345,47 +345,5 @@ public class YandexElement extends TypifiedElement {
         element.isDisplayedAssertion();
         return element;
     }
-
-
-//
-//    @Override
-//    public String getXpath() {
-//        return null;
-//    }
-//
-//    @Override
-//    public Component getParent() {
-//        return null;
-//    }
-//
-//    @Override
-//    public WebElement find() {
-//        return null;
-//    }
-//
-//    @Override
-//    public WebDriver getBrowser() {
-//        return null;
-//    }
-//
-//    @Override
-//    public List<WebElement> findAll() {
-//        return null;
-//    }
-//
-//    @Override
-//    public String getValue() {
-//        return null;
-//    }
-//
-//    @Override
-//    public String getFullXpath() {
-//        return null;
-//    }
-//
-//    @Override
-//    public boolean isReady() {
-//        return false;
-//    }
 
 }

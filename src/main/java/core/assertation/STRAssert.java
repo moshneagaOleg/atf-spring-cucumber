@@ -11,11 +11,11 @@ import java.util.List;
 /**
  * Only jUnit and Hamcrest assertion
  */
-public class LoggingAssert {
+public class STRAssert {
 
     private static final String MESSAGE_EXPECTED_ACTUAL = "{}{} - expected: {}{} - actual: {}";
     private static final String ASSERT_THAT_STR = "Assert that ";
-    private static Logger logger = LoggerFactory.getLogger(LoggingAssert.class);
+    private static Logger logger = LoggerFactory.getLogger(STRAssert.class);
 
     public static void assertTrue(String message, boolean condition) {
         String fullMessage = ASSERT_THAT_STR + message;

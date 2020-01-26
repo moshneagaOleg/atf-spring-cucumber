@@ -22,7 +22,7 @@ public class DriverFactory {
     //    private static final String BROWSER_NAME = Config.getString("browser");
     private static final String BROWSER_NAME = "chrome";
     private static final String CI_MODE = "ci";
-//    private static Logger logger = LoggerFactory.getLogger(LoggingAssert.class);
+//    private static Logger logger = LoggerFactory.getLogger(STRAssert.class);
 
     public DriverFactory() {
     }
