@@ -6,6 +6,7 @@ import core.driver.DriverFactory;
 import core.element.YandexElement;
 import core.factory.PageCreator;
 import core.page.AbstractPage;
+import core.scanner.PageScanner;
 import core.util.WaitUtils;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -17,6 +18,7 @@ import io.cucumber.java.Before;
 import io.tpd.springbootcucumber.Config;
 import io.tpd.springbootcucumber.SpringBootCucumberApplication;
 import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
@@ -94,6 +96,19 @@ public class StepDefinitions {
             webDriver.quit();
             log.info("Browser was closed");
         }
+    }
+
+    @When("user clicks on the {string} from {string} page")
+    public void userClicksOnTheElement(String elementName, String pageName) {
+        sp.waitForClickable(PageScanner.getElementByName(webDriver, elementName, pageName), 10).click();
+    }
+
+    @Then("user verify {string}")
+    public void userVerifyPageTitle(String pageTitle) {
+        String xPath = String.format("//*[contains(text(), '%s')]", pageTitle);
+        YandexElement title = new YandexElement(webDriver.findElements(By.xpath(xPath)).get(0));
+        Boolean titleIsPresent = WaitUtils.waitUntilCondition(title::isPresent, true, 10);
+        LoggingAssert.assertTrue(String.format("Page title is present '%s'", pageTitle), titleIsPresent);
     }
 
     private Boolean waitForMessage(Supplier<List<YandexElement>> webElements, String msg, int secondsTimeout) {
