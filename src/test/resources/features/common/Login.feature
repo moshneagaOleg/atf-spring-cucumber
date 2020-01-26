@@ -1,4 +1,4 @@
-@Login
+@Login @Smoke
 Feature: Login feature
 
   Scenario: Login/LogOut

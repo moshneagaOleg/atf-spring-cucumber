@@ -4,7 +4,7 @@ spring:
 ---
 env.name: qa
 ---
-basicUser: auto+wgu-api-45778982010878@straighterline.com
+basicUser: auto+do-not-touch-this-user@straighterline.com
 commonPassword: Secretpwd@1
 ---
 spring:
