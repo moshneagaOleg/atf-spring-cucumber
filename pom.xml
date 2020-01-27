@@ -21,7 +21,6 @@
         <maven.compiler.target>1.9</maven.compiler.target>
         <spring.version>4.3.0.RELEASE</spring.version>
         <selenium.version>3.141.59</selenium.version>
-        <tags>--tags ~@Ignore</tags>
     </properties>
 
     <dependencies>
@@ -97,56 +96,19 @@
         </dependency>
     </dependencies>
 
-    <!--    <build>-->
-    <!--        <plugins>-->
-    <!--            <plugin>-->
-    <!--                <groupId>org.apache.maven.plugins</groupId>-->
-    <!--                <artifactId>maven-surefire-plugin</artifactId>-->
-    <!--                <version>2.19.1</version>-->
-    <!--                <configuration>-->
-    <!--                    <includes>-->
-    <!--                        <include>**/RunCucumberIT.java</include>-->
-    <!--                    </includes>-->
-    <!--                    <systemPropertyVariables>-->
-    <!--                        <cucumber.options><![CDATA[${tags}]]></cucumber.options>-->
-    <!--                    </systemPropertyVariables>-->
-    <!--                </configuration>-->
-    <!--            </plugin>-->
-    <!--        </plugins>-->
-    <!--    </build>-->
-
-
-    <profiles>
-        <profile>
-            <id>generic-runner</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>2.19.1</version>
-                        <configuration>
-                            <forkCount>1</forkCount>
-                            <reuseForks>true</reuseForks>
-                            <includes>
-                                <include>**/RunCucumberIT.java</include>
-                            </includes>
-                            <argLine>-Xmx1024m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
-                            <systemPropertyVariables>
-                                <cucumber.options><![CDATA[${tags}]]></cucumber.options>
-                            </systemPropertyVariables>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.19.1</version>
+                    <configuration>
+                        <includes>
+                            <include>**/RunCucumberIT.java</include>
+                        </includes>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
 
 </project>
