@@ -2,12 +2,10 @@ package io.tpd.springbootcucumber.bagbasics;
 
 import core.app.abstractApps.AbstractStudentPortal;
 import core.assertation.STRAssert;
-import core.driver.DriverFactory;
 import core.element.YandexElement;
 import core.factory.PageCreator;
 import core.page.AbstractPage;
 import core.scanner.PageScanner;
-import io.tpd.springbootcucumber.ScenarioContext;
 import core.util.WaitUtils;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -15,8 +13,9 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.cucumber.core.api.Scenario;
 import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.tpd.springbootcucumber.Config;
+import io.tpd.springbootcucumber.PageKeys;
+import io.tpd.springbootcucumber.ScenarioContext;
 import io.tpd.springbootcucumber.SpringBootCucumberApplication;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
@@ -51,6 +50,8 @@ public class StepDefinitions {
 
     @Given("user open page {string}")
     public void userOpenPage(String pageName) {
+        webDriver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
+        sp = AbstractStudentPortal.initApp(webDriver);
         AbstractPage page = new PageCreator(webDriver, config.getBaseUrl()).getPage(pageName);
         page.open();
     }
@@ -81,13 +82,13 @@ public class StepDefinitions {
         sp.waitForClickable(sp.mainMenuAuth().logoutLnk, 10).click();
     }
 
-    @Before
-    public void openBrowser() {
-        webDriver = DriverFactory.openBrowser();
-        // FIXME: 1/25/2020 by active profile init app from reflection
-//        wgu = WGU.initApp(webDriver);
-        sp = AbstractStudentPortal.initApp(webDriver);
-    }
+//    @Before
+//    public void openBrowser() {
+//        webDriver = DriverFactory.openBrowser();
+//        // FIXME: 1/25/2020 by active profile init app from reflection
+////        wgu = WGU.initApp(webDriver);
+//        sp = AbstractStudentPortal.initApp(webDriver);
+//    }
 
     @After
     public void closeBrowser(Scenario scenario) {

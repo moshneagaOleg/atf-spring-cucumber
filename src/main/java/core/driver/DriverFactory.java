@@ -10,6 +10,8 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,7 +24,7 @@ public class DriverFactory {
     //    private static final String BROWSER_NAME = Config.getString("browser");
     private static final String BROWSER_NAME = "chrome";
     private static final String CI_MODE = "ci";
-//    private static Logger logger = LoggerFactory.getLogger(STRAssert.class);
+    private static Logger logger = LoggerFactory.getLogger(DriverFactory.class);
 
     public DriverFactory() {
     }
@@ -46,7 +48,7 @@ public class DriverFactory {
      */
     public static WebDriver openBrowser(Browser browser, String... arguments) {
         WebDriver driver = instantiateDriver(browser, arguments);
-//        logger.info("Browser '{}' was opened", browser.name.toUpperCase());
+        logger.info("Browser '{}' was opened", browser.name.toUpperCase());
         setCustomDriverSettings(driver);
         return driver;
     }
@@ -58,14 +60,16 @@ public class DriverFactory {
      * @return WebDriver
      */
     public static WebDriver getDriver(@NonNull Browser browser) {
-//        logger.info("Current browser is {}", browser.name);
+        logger.info("Current browser is {}", browser.name);
         return instantiateDriver(browser);
     }
 
     private static WebDriver instantiateDriver(@NonNull Browser browser, String... arguments) {
         if (!CI_MODE.equalsIgnoreCase(System.getProperty("runMode"))) {
 //            String pathToDriver = getDriverPath(browser);
-            String pathToDriver = "C:\\Users\\omosneaga\\Desktop\\spring-boot-cucumber-master\\src\\main\\resources\\drivers\\windows\\chrome\\chromedriver.exe";
+            // FIXME: 1/27/2020 get relative path
+            String pathToDriver = "C:\\Users\\omosneaga\\Desktop\\spring-boot-cucumber-master\\" +
+                    "src\\main\\resources\\drivers\\windows\\chromedriver.exe";
             System.setProperty(browser.driverProperty, pathToDriver);
         }
         switch (browser) {
@@ -92,8 +96,8 @@ public class DriverFactory {
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         driver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
         driver.manage().timeouts().setScriptTimeout(120, TimeUnit.SECONDS);
-//        logger.info("Were installed implicitlyWait: '{}', pageLoadTimeout: '{}', scriptTimeout: '{}'",
-//                5, 120, 120);
+        logger.info("Were installed implicitlyWait: '{}', pageLoadTimeout: '{}', scriptTimeout: '{}'",
+                5, 120, 120);
     }
 
     /**
@@ -121,15 +125,5 @@ public class DriverFactory {
                 throw new RuntimeException(format("Could not generate path to driver for %s", browser));
         }
     }
-
-
-//    @SneakyThrows
-//    public void closeBrowser() {
-//        if (driver != null) {
-//            driver.close();
-//            driver.quit();
-//            logger.info("Browser was closed");
-//        }
-//    }
 
 }

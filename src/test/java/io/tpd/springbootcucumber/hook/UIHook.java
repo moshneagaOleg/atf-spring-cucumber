@@ -1,11 +1,14 @@
 package io.tpd.springbootcucumber.hook;
 
+import core.driver.DriverFactory;
 import core.logger.TestLogHelper;
 import io.cucumber.core.api.Scenario;
 import io.cucumber.java.Before;
 import io.tpd.springbootcucumber.Config;
+import io.tpd.springbootcucumber.PageKeys;
 import io.tpd.springbootcucumber.ScenarioContext;
 import lombok.Getter;
+import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,8 @@ public class UIHook {
 
     private Logger logger = LoggerFactory.getLogger(UIHook.class);
 
+    private WebDriver webDriver;
+
     @Before(order = -5)
     public void loggerConfiguration(Scenario scenario) {
         logger.debug("Invoke before hook [order=1]");
@@ -40,6 +45,15 @@ public class UIHook {
                 .concat("-" + LocalTime.now().toSecondOfDay());
         TestLogHelper.startTestLogging(scenarioNameFinal);
         logger.info("Current testName value is : '{}'", TestLogHelper.getCurrentLogName());
+    }
+
+    @Before
+    public void openBrowser() {
+        webDriver = DriverFactory.openBrowser();
+        scenarioContext.save(PageKeys.OPEN_DRIVER, webDriver);
+        // FIXME: 1/25/2020 by active profile init app from reflection
+//        wgu = WGU.initApp(webDriver);
+//        sp = AbstractStudentPortal.initApp(webDriver);
     }
 
 }
