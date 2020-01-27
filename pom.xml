@@ -21,6 +21,7 @@
         <maven.compiler.target>1.9</maven.compiler.target>
         <spring.version>4.3.0.RELEASE</spring.version>
         <selenium.version>3.141.59</selenium.version>
+        <tags>--tags ~@Ignore</tags>
     </properties>
 
     <dependencies>
@@ -106,6 +107,9 @@
                     <includes>
                         <include>**/RunCucumberIT.java</include>
                     </includes>
+                    <systemPropertyVariables>
+                        <cucumber.options><![CDATA[${tags}]]></cucumber.options>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>
