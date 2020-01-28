@@ -1,4 +1,4 @@
-package io.tpd.springbootcucumber.bagbasics;
+package io.tpd.springbootcucumber.runner;
 
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;

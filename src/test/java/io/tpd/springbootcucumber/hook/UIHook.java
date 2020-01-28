@@ -1,5 +1,6 @@
 package io.tpd.springbootcucumber.hook;
 
+import com.assertthat.selenium_shutterbug.core.Shutterbug;
 import core.app.CSU;
 import core.app.FTK;
 import core.app.HRZ;
@@ -20,6 +21,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 
@@ -36,8 +42,8 @@ public class UIHook {
     private ScenarioContext scenarioContext;
 
     private Logger logger = LoggerFactory.getLogger(UIHook.class);
-
     private WebDriver webDriver;
+    public static final String SCREENSHOT_PATH = "target/logs/screenshots/";
 
     @Before(order = -5)
     public void loggerConfiguration(Scenario scenario) {
@@ -71,10 +77,17 @@ public class UIHook {
     }
 
     @After
-    public void closeBrowser(Scenario scenario) {
+    public void closeBrowser(Scenario scenario) throws IOException {
         if (scenario.isFailed()) {
-            scenario.getName();
+            String imageName = scenario.getName().concat("_" + scenario.getStatus()).concat(String.valueOf(LocalDateTime.now().getNano()));
+            Shutterbug.shootPage(webDriver)
+                    .withName(imageName)
+                    .save(SCREENSHOT_PATH);
+            Path path = Paths.get(SCREENSHOT_PATH.concat(imageName).concat(".png"));
+            byte[] screenshot = Files.readAllBytes(path);
+            scenario.embed(screenshot, "image/png");
         }
+
         if (webDriver != null) {
             webDriver.close();
             webDriver.quit();

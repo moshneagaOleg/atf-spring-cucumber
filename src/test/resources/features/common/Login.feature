@@ -3,7 +3,7 @@ Feature: Login feature
 
   Scenario: Login/LogOut
     Given user open page 'Login'
-    When user login on the page
+#    When user login on the page
     And user is on the 'Dashboard' page
     And user logOut
     And user verify 'You have successfully logged out.' message
