@@ -1,4 +1,4 @@
-#@HRZLogin
+@HRZLogin
 Feature: HRZ Login feature
 
   Scenario: HRZ Login/LogOut
