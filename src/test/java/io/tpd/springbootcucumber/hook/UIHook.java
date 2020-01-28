@@ -1,6 +1,5 @@
 package io.tpd.springbootcucumber.hook;
 
-import com.assertthat.selenium_shutterbug.core.Shutterbug;
 import core.app.CSU;
 import core.app.FTK;
 import core.app.HRZ;
@@ -9,12 +8,15 @@ import core.app.abstractApps.AbstractStudentPortal;
 import core.driver.DriverFactory;
 import core.logger.TestLogHelper;
 import io.cucumber.core.api.Scenario;
+import io.cucumber.core.event.Status;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.tpd.springbootcucumber.Config;
 import io.tpd.springbootcucumber.PageKeys;
 import io.tpd.springbootcucumber.ScenarioContext;
 import lombok.Getter;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 
@@ -78,14 +76,18 @@ public class UIHook {
 
     @After
     public void closeBrowser(Scenario scenario) throws IOException {
-        if (scenario.isFailed()) {
-            String imageName = scenario.getName().concat("_" + scenario.getStatus()).concat(String.valueOf(LocalDateTime.now().getNano()));
-            Shutterbug.shootPage(webDriver)
-                    .withName(imageName)
-                    .save(SCREENSHOT_PATH);
-            Path path = Paths.get(SCREENSHOT_PATH.concat(imageName).concat(".png"));
-            byte[] screenshot = Files.readAllBytes(path);
+        if (scenario.getStatus().is(Status.FAILED)) {
+            final byte[] screenshot = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES);
+            // embed it in the report.
             scenario.embed(screenshot, "image/png");
+//            String imageName = scenario.getName().concat("_" + scenario.getStatus()).concat(String.valueOf(LocalDateTime.now().getNano()));
+//            Shutterbug.shootPage(webDriver)
+//                    .withName(imageName)
+//                    .save(SCREENSHOT_PATH);
+//            Path path = Paths.get(SCREENSHOT_PATH.concat(imageName).concat(".png"));
+//            byte[] screenshot = Files.readAllBytes(path);
+//            scenario.embed(screenshot, "image/png");
+            logger.info(String.format("Take a screenshot %s", screenshot));
         }
 
         if (webDriver != null) {
