@@ -22,19 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import ru.yandex.qatools.ashot.AShot;
-import ru.yandex.qatools.ashot.Screenshot;
-import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Date;
 
 @Getter
 public class UIHook {
@@ -84,13 +74,10 @@ public class UIHook {
     }
 
     @After
-    public void closeBrowser(Scenario scenario) throws IOException {
+    public void closeBrowser(Scenario scenario) {
         if (scenario.getStatus().is(Status.FAILED)) {
             final byte[] screenshot = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES);
             // FIXME: 1/28/2020 add file png in log
-//            String imageName = scenario.getName().concat("_" + scenario.getStatus())
-//                    .concat(String.valueOf(LocalDateTime.now().getNano()));
-//            Path path = Paths.get(SCREENSHOT_PATH.concat(imageName).concat(".png"));
             scenario.embed(screenshot, "image/png");
             logger.info("Screenshot was taken");
         }
@@ -100,28 +87,6 @@ public class UIHook {
             webDriver.quit();
             logger.info("Browser was closed");
         }
-    }
-
-    public byte[] takeScreenshot(WebDriver webDriver) throws IOException {
-        int pixelRatio = 1;
-        if (webDriver.toString().contains("MAC")) {
-            pixelRatio = 2;
-        }
-
-        final Screenshot screenshot = new AShot().shootingStrategy(ShootingStrategies
-                .viewportRetina(200, 0,0,pixelRatio))
-                .takeScreenshot(webDriver);
-        final BufferedImage image = screenshot.getImage();
-        Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
-
-        ImageIO.write(image,"PNG",new File("target/cucumber-reports/"
-                + dateFormat.format(date) + ".png"));
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ImageIO.write(image,"png",outputStream);
-
-        return outputStream.toByteArray();
     }
 
 }
