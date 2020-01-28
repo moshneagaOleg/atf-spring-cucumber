@@ -42,7 +42,7 @@ public class CommonStepDefinitions {
     public void userIsOnThePage(String pageName) {
         AbstractPage page = new PageCreator(webDriver, config.getBaseUrl()).getPage(pageName);
         STRAssert.assertTrue(String.format("User is on the '%s' page", pageName),
-                WaitUtils.waitUntilCondition(page::isCurrentPage, true, 30));
+                WaitUtils.waitUntilCondition(page::isCurrentPage, true, 5));
     }
 
     @When("user clicks on the {string} from {string} page")
