@@ -3,16 +3,10 @@ package io.tpd.springbootcucumber.bagbasics;
 import core.app.abstractApps.AbstractStudentPortal;
 import core.assertation.STRAssert;
 import core.element.YandexElement;
-import core.factory.PageCreator;
-import core.page.AbstractPage;
-import core.scanner.PageScanner;
 import core.util.WaitUtils;
 import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import io.cucumber.core.api.Scenario;
-import io.cucumber.java.After;
 import io.tpd.springbootcucumber.Config;
 import io.tpd.springbootcucumber.PageKeys;
 import io.tpd.springbootcucumber.ScenarioContext;
@@ -21,8 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
@@ -32,8 +24,6 @@ import java.util.function.Supplier;
 
 @SpringBootTest(classes = SpringBootCucumberApplication.class)
 public class StepDefinitions {
-
-    private final Logger log = LoggerFactory.getLogger(StepDefinitions.class);
 
     @Autowired
     private Config config;
@@ -48,21 +38,6 @@ public class StepDefinitions {
 
     private AbstractStudentPortal sp;
 
-    @Given("user open page {string}")
-    public void userOpenPage(String pageName) {
-        webDriver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
-        sp = AbstractStudentPortal.initApp(webDriver);
-        AbstractPage page = new PageCreator(webDriver, config.getBaseUrl()).getPage(pageName);
-        page.open();
-    }
-
-    @When("user is on the {string} page")
-    public void userIsOnThePage(String pageName) {
-        AbstractPage page = new PageCreator(webDriver, config.getBaseUrl()).getPage(pageName);
-        STRAssert.assertTrue(String.format("User is on the '%s' page", pageName),
-                WaitUtils.waitUntilCondition(page::isCurrentPage, true, 30));
-    }
-
     @Then("user verify {string} message")
     public void userVerifyStringMessage(String message) {
         STRAssert.assertTrue(String.format("Message is present '%s'", message),
@@ -71,6 +46,8 @@ public class StepDefinitions {
 
     @When("user login on the page")
     public void userLoginOnThePage() {
+        webDriver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
+        sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
         sp.login().emailInp.sendKeys(config.getBasicUser());
         sp.login().passwordInp.sendKeys(config.getCommonPassword());
         sp.login().continueBtn.click();
@@ -80,31 +57,6 @@ public class StepDefinitions {
     public void userLogOut() {
         sp.waitForClickable(sp.mainMenuAuth().photoBtn, 10).click();
         sp.waitForClickable(sp.mainMenuAuth().logoutLnk, 10).click();
-    }
-
-//    @Before
-//    public void openBrowser() {
-//        webDriver = DriverFactory.openBrowser();
-//        // FIXME: 1/25/2020 by active profile init app from reflection
-////        wgu = WGU.initApp(webDriver);
-//        sp = AbstractStudentPortal.initApp(webDriver);
-//    }
-
-    @After
-    public void closeBrowser(Scenario scenario) {
-        if (scenario.isFailed()) {
-            scenario.getName();
-        }
-        if (webDriver != null) {
-            webDriver.close();
-            webDriver.quit();
-            log.info("Browser was closed");
-        }
-    }
-
-    @When("user clicks on the {string} from {string} page")
-    public void userClicksOnTheElement(String elementName, String pageName) {
-        sp.waitForClickable(PageScanner.getElementByName(webDriver, elementName, pageName), 10).click();
     }
 
     @Then("user verify {string}")

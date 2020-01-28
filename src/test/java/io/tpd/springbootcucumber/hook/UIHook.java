@@ -1,8 +1,14 @@
 package io.tpd.springbootcucumber.hook;
 
+import core.app.CSU;
+import core.app.FTK;
+import core.app.HRZ;
+import core.app.WGU;
+import core.app.abstractApps.AbstractStudentPortal;
 import core.driver.DriverFactory;
 import core.logger.TestLogHelper;
 import io.cucumber.core.api.Scenario;
+import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.tpd.springbootcucumber.Config;
 import io.tpd.springbootcucumber.PageKeys;
@@ -48,12 +54,32 @@ public class UIHook {
     }
 
     @Before
-    public void openBrowser() {
+    public void openBrowser(Scenario scenario) {
         webDriver = DriverFactory.openBrowser();
         scenarioContext.save(PageKeys.OPEN_DRIVER, webDriver);
-        // FIXME: 1/25/2020 by active profile init app from reflection
-//        wgu = WGU.initApp(webDriver);
-//        sp = AbstractStudentPortal.initApp(webDriver);
+        switch (Config.TENANT) {
+            case "wgu":
+                scenarioContext.save(PageKeys.WGU_INIT, WGU.initApp(webDriver));
+            case "csu":
+                scenarioContext.save(PageKeys.CSU_INIT, CSU.initApp(webDriver));
+            case "ftk":
+                scenarioContext.save(PageKeys.WGU_INIT, FTK.initApp(webDriver));
+            case "hrz":
+                scenarioContext.save(PageKeys.WGU_INIT, HRZ.initApp(webDriver));
+        }
+        scenarioContext.save(PageKeys.STUDENT_PORTAL_INIT, AbstractStudentPortal.initApp(webDriver));
+    }
+
+    @After
+    public void closeBrowser(Scenario scenario) {
+        if (scenario.isFailed()) {
+            scenario.getName();
+        }
+        if (webDriver != null) {
+            webDriver.close();
+            webDriver.quit();
+            logger.info("Browser was closed");
+        }
     }
 
 }

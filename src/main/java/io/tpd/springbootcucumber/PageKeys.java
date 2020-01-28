@@ -14,8 +14,12 @@ public enum PageKeys implements Keys {
     PRODUCT_NAME_FROM_ELEMENT("Last saved product name"),
     LIST_RANDOM_VALUES("(A list of random values selected durring the test"),
     SCENARIO_NAME("Name of executed scenario"),
-    GREEN_MAIL_SERVER("GreenEmail server");
-
+    GREEN_MAIL_SERVER("GreenEmail server"),
+    WGU_INIT("Init WGU"),
+    CSU_INIT("Init CSU"),
+    FTK_INIT("Init FTK"),
+    HRZ_INIT("Init HRZ"),
+    STUDENT_PORTAL_INIT("Init Student Portal");
 
     private String description;
 
