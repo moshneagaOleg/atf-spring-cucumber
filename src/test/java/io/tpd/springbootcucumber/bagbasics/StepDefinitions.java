@@ -1,5 +1,9 @@
 package io.tpd.springbootcucumber.bagbasics;
 
+import core.app.CSU;
+import core.app.FTK;
+import core.app.HRZ;
+import core.app.WGU;
 import core.app.abstractApps.AbstractStudentPortal;
 import core.assertation.STRAssert;
 import core.element.YandexElement;
@@ -79,4 +83,38 @@ public class StepDefinitions {
         return WaitUtils.waitUntilCondition(messageIsPresent, true, secondsTimeout);
     }
 
+    @And("user complete {string} request")
+    public void userCompleteRequest(String isPositive) {
+        if (Boolean.valueOf(isPositive)) {
+            switch (Config.TENANT) {
+                case "wgu":
+                    WGU wgu = (WGU) scenarioContext.getData(PageKeys.WGU_INIT);
+                    wgu.supportRequest().complete();
+                case "csu":
+                    CSU csu = (CSU) scenarioContext.getData(PageKeys.CSU_INIT);
+                    csu.supportRequest().complete();
+                case "ftk":
+                    FTK ftk = (FTK) scenarioContext.getData(PageKeys.FTK_INIT);
+                    ftk.supportRequest().complete();
+                case "hrz":
+                    HRZ hrz = (HRZ) scenarioContext.getData(PageKeys.HRZ_INIT);
+                    hrz.supportRequest().complete();
+            }
+        } else {
+            switch (Config.TENANT) {
+                case "wgu":
+                    WGU wgu = (WGU) scenarioContext.getData(PageKeys.WGU_INIT);
+                    wgu.supportRequest().complete();
+                case "csu":
+                    CSU csu = (CSU) scenarioContext.getData(PageKeys.CSU_INIT);
+                    csu.supportRequest().complete();
+                case "ftk":
+                    FTK ftk = (FTK) scenarioContext.getData(PageKeys.FTK_INIT);
+                    ftk.supportRequest().complete();
+                case "hrz":
+                    HRZ hrz = (HRZ) scenarioContext.getData(PageKeys.HRZ_INIT);
+                    hrz.supportRequest().complete();
+            }
+        }
+    }
 }

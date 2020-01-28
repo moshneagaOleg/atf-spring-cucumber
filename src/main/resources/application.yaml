@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: wgu
+    active: hrz
 ---
 env.name: qa
 ---
@@ -30,3 +30,10 @@ spring:
 datasource:
   name: Horizont
   url: https://${env.name}.horizons.straighterline.net
+---
+spring:
+  profiles: feature
+datasource:
+  name: Feature
+  url: https://${env.name}.feat.brighthorizons.straighterline.net
+#  env.name = en-13220

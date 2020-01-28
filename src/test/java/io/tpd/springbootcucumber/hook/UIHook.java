@@ -66,9 +66,9 @@ public class UIHook {
             case "csu":
                 scenarioContext.save(PageKeys.CSU_INIT, CSU.initApp(webDriver));
             case "ftk":
-                scenarioContext.save(PageKeys.WGU_INIT, FTK.initApp(webDriver));
+                scenarioContext.save(PageKeys.FTK_INIT, FTK.initApp(webDriver));
             case "hrz":
-                scenarioContext.save(PageKeys.WGU_INIT, HRZ.initApp(webDriver));
+                scenarioContext.save(PageKeys.HRZ_INIT, HRZ.initApp(webDriver));
         }
         scenarioContext.save(PageKeys.STUDENT_PORTAL_INIT, AbstractStudentPortal.initApp(webDriver));
     }

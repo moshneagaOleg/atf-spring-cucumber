@@ -1,4 +1,4 @@
-package pageObject.csu.helpCenter;
+package pageObject.common;
 
 import core.annotations.PageAccessor;
 import core.element.YandexElement;
@@ -41,11 +41,17 @@ public final class SupportRequest extends AbstractPage {
     }
 
     public void complete() {
-
     }
 
     public void completeNegative() {
+    }
 
+    public void checkErrorMessages() {
+
+    }
+
+    public void clickSubmit() {
+        submitBtn.click();
     }
 
 }
