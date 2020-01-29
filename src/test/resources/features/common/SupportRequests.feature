@@ -1,4 +1,4 @@
-@Enroll @Smoke
+@SupportRequest @Smoke
 Feature: Support Request
 
   Scenario Outline: Support Request
