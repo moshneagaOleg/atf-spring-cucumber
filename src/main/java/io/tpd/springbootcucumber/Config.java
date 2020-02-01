@@ -27,6 +27,9 @@ public class Config {
     @Value("${datasource.url}")
     private String baseUrl;
 
+    @Value("${browser}")
+    private String browser;
+
     @Value("${basicUser}")
     private String basicUser;
 

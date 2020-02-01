@@ -4,6 +4,8 @@ spring:
 ---
 env.name: qa
 ---
+browser: chrome
+---
 basicUser: auto+do-not-touch-this-user@straighterline.com
 commonPassword: Secretpwd@1
 ---

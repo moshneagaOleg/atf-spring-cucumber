@@ -5,7 +5,7 @@ import core.app.FTK;
 import core.app.HRZ;
 import core.app.WGU;
 import core.app.abstractApps.AbstractStudentPortal;
-import core.assertation.STRAssert;
+import core.assertation.VTFAssert;
 import core.element.YandexElement;
 import core.util.WaitUtils;
 import cucumber.api.java.en.And;
@@ -44,7 +44,7 @@ public class StepDefinitions {
 
     @Then("user verify {string} message")
     public void userVerifyStringMessage(String message) {
-        STRAssert.assertTrue(String.format("Message is present '%s'", message),
+        VTFAssert.assertThat(String.format("Message is present '%s'", message),
                 waitForMessage(() -> sp.successMsgs, message, 15));
     }
 
@@ -68,7 +68,7 @@ public class StepDefinitions {
         String xPath = String.format("//*[contains(text(), '%s')]", pageTitle);
         YandexElement title = new YandexElement(webDriver.findElements(By.xpath(xPath)).get(0));
         Boolean titleIsPresent = WaitUtils.waitUntilCondition(title::isPresent, true, 10);
-        STRAssert.assertTrue(String.format("Page title is present '%s'", pageTitle), titleIsPresent);
+        VTFAssert.assertThat(String.format("Page title is present '%s'", pageTitle), titleIsPresent);
     }
 
     private Boolean waitForMessage(Supplier<List<YandexElement>> webElements, String msg, int secondsTimeout) {
@@ -116,5 +116,10 @@ public class StepDefinitions {
                     hrz.supportRequest().complete();
             }
         }
+    }
+
+    @And("user clicks submit")
+    public void userClicksSubmit() {
+        a
     }
 }

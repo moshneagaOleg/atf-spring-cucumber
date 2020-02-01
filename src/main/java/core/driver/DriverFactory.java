@@ -4,10 +4,8 @@ import lombok.NonNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
 import org.slf4j.Logger;
@@ -21,13 +19,11 @@ import static java.lang.String.format;
 public class DriverFactory {
 
     private static final String DRIVERS = "drivers";
-    //    private static final String BROWSER_NAME = Config.getString("browser");
     private static final String BROWSER_NAME = "chrome";
+    private static final String pathToDriver = "C:\\Users\\omosneaga\\Desktop\\spring-boot-cucumber-master\\" +
+            "src\\main\\resources\\drivers\\windows\\chromedriver.exe";
     private static final String CI_MODE = "ci";
     private static Logger logger = LoggerFactory.getLogger(DriverFactory.class);
-
-    public DriverFactory() {
-    }
 
     /**
      * Open new Driver instance for respective Browser
@@ -65,11 +61,10 @@ public class DriverFactory {
     }
 
     private static WebDriver instantiateDriver(@NonNull Browser browser, String... arguments) {
+        // FIXME: 1/31/2020 current implementation working for all runMode
         if (!CI_MODE.equalsIgnoreCase(System.getProperty("runMode"))) {
 //            String pathToDriver = getDriverPath(browser);
             // FIXME: 1/27/2020 get relative path
-            String pathToDriver = "C:\\Users\\omosneaga\\Desktop\\spring-boot-cucumber-master\\" +
-                    "src\\main\\resources\\drivers\\windows\\chromedriver.exe";
             System.setProperty(browser.driverProperty, pathToDriver);
         }
         switch (browser) {
@@ -79,8 +74,6 @@ public class DriverFactory {
                 return new FirefoxDriver(new FirefoxOptions().addArguments(arguments));
             case SAFARI:
                 return new SafariDriver(new SafariOptions());
-            case EDGE:
-                return new EdgeDriver(new InternetExplorerOptions());
             default:
                 throw new RuntimeException(format("Could not create new instance of driver for %s", browser.name));
         }
@@ -123,6 +116,14 @@ public class DriverFactory {
             }
             default:
                 throw new RuntimeException(format("Could not generate path to driver for %s", browser));
+        }
+    }
+
+    public static void closeBrowser(WebDriver driver) {
+        if (driver != null) {
+            driver.close();
+            driver.quit();
+            logger.info("Browser was closed");
         }
     }
 

@@ -1,7 +1,7 @@
 package io.tpd.springbootcucumber.bagcommons;
 
 import core.app.abstractApps.AbstractStudentPortal;
-import core.assertation.STRAssert;
+import core.assertation.VTFAssert;
 import core.factory.PageCreator;
 import core.page.AbstractPage;
 import core.scanner.PageScanner;
@@ -41,7 +41,7 @@ public class CommonStepDefinitions {
     @When("user is on the {string} page")
     public void userIsOnThePage(String pageName) {
         AbstractPage page = new PageCreator(webDriver, config.getBaseUrl()).getPage(pageName);
-        STRAssert.assertTrue(String.format("User is on the '%s' page", pageName),
+        VTFAssert.assertThat(String.format("User is on the '%s' page", pageName),
                 WaitUtils.waitUntilCondition(page::isCurrentPage, true, 20));
     }
 

@@ -5,6 +5,7 @@ import core.app.FTK;
 import core.app.HRZ;
 import core.app.WGU;
 import core.app.abstractApps.AbstractStudentPortal;
+import core.driver.Browser;
 import core.driver.DriverFactory;
 import core.logger.TestLogHelper;
 import io.cucumber.core.api.Scenario;
@@ -40,7 +41,6 @@ public class UIHook {
 
     private Logger logger = LoggerFactory.getLogger(UIHook.class);
     private WebDriver webDriver;
-    public static final String SCREENSHOT_PATH = "target/logs/screenshots/";
 
     @Before(order = -5)
     public void loggerConfiguration(Scenario scenario) {
@@ -57,8 +57,8 @@ public class UIHook {
     }
 
     @Before
-    public void openBrowser(Scenario scenario) {
-        webDriver = DriverFactory.openBrowser();
+    public void openBrowser() {
+        webDriver = DriverFactory.openBrowser(Browser.get(config.getBrowser()));
         scenarioContext.save(PageKeys.OPEN_DRIVER, webDriver);
         switch (Config.TENANT) {
             case "wgu":
@@ -76,17 +76,11 @@ public class UIHook {
     @After
     public void closeBrowser(Scenario scenario) {
         if (scenario.getStatus().is(Status.FAILED)) {
-            final byte[] screenshot = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES);
             // FIXME: 1/28/2020 add file png in log
-            scenario.embed(screenshot, "image/png");
+            scenario.embed(((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES), "image/png");
             logger.info("Screenshot was taken");
         }
-
-        if (webDriver != null) {
-            webDriver.close();
-            webDriver.quit();
-            logger.info("Browser was closed");
-        }
+        DriverFactory.closeBrowser(webDriver);
     }
 
 }

@@ -1,6 +1,6 @@
 package core.element;
 
-import core.assertation.STRAssert;
+import core.assertation.VTFAssert;
 import core.util.WaitUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -23,6 +25,8 @@ import java.util.regex.Pattern;
 import static core.util.JSUtils.executeJavaScript;
 import static core.util.ScreenshotUtils.highlightElement;
 import static core.util.ScreenshotUtils.unhighlightElement;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 
 public class YandexElement extends TypifiedElement {
 
@@ -43,7 +47,6 @@ public class YandexElement extends TypifiedElement {
 
     private String xPath;
     private static final int ATTEMPTS_NUMBER = 3;
-    protected STRAssert STRAssert = new STRAssert();
     private Logger logger = LoggerFactory.getLogger(YandexElement.class.getSimpleName());
 
     public YandexElement(WebElement wrappedElement) {
@@ -58,7 +61,7 @@ public class YandexElement extends TypifiedElement {
     @Override
     public void click() {
         scrollTo();
-//        waitForClickable(this, 10).click();
+        waitForClickable(this, 10);
         execute(() -> this.getWrappedElement().click());
         logger.info("Clicked on '{}'", getName());
     }
@@ -124,60 +127,58 @@ public class YandexElement extends TypifiedElement {
     }
 
     public void checkIfEquals(String value) {
-        STRAssert.assertEquals(this.getText(), value, String.format("Validate '%s' text if equals", getName()));
+        VTFAssert.assertThat(String.format("Validate '%s' text if equals", getName()), this.getText(), is(value));
     }
 
     public void checkIfMatches(String regexp) {
-        STRAssert.assertTrue(String.format("Validate '%s' text if matches pattern '%s'", this.getText(), regexp),
+        VTFAssert.assertThat(String.format("Validate '%s' text if matches pattern '%s'", this.getText(), regexp),
                 Pattern.matches(regexp, this.getText()));
     }
 
     public void checkIfEquals(Function<YandexElement, String> function, String value) {
-        STRAssert.assertEquals(function.apply(this).trim(), value,
-                String.format("Validate '%s' text if equals", getName()));
+        VTFAssert.assertThat(String.format("Validate '%s' text if equals", getName()),
+                function.apply(this).trim(), is(value));
     }
 
     public void checkIfContains(String value) {
-        STRAssert.assertContains(this.getText(), value,
-                String.format("Validate '%s' text if contained", getName()));
+        VTFAssert.assertContains(this.getText(), value, String.format("Validate '%s' text if contained", getName()));
     }
 
     public void checkAttribute(String attributeName, String attributeValue) {
-        STRAssert.assertContains(getAttribute(attributeName), attributeValue,
+        VTFAssert.assertContains(getAttribute(attributeName), attributeValue,
                 String.format("Validate '%s' element attribute '%s' contains value '%s'", getName(), attributeName, attributeValue));
     }
 
     public void isDisplayedAssertion() {
         try {
-            STRAssert.assertTrue("Check element '" + getName() + "' is displayed", isDisplayed());
+            VTFAssert.assertThat(String.format("Check element '%s' is displayed", getName()), isDisplayed());
         } catch (NoSuchElementException e) {
-            Assert.fail("Element '" + getName() + "' does not exist");
+            Assert.fail(String.format("Element '%s' does not exist", getName()));
         }
     }
 
     public void isVisibleAssertion() {
-        STRAssert.assertTrue("Check element '" + getName() + "' is visible",
-                isDisplayed() && isVisible());
+        VTFAssert.assertThat(String.format("Check element '%s' is visible", getName()), is(isDisplayed() && isVisible()));
     }
 
     public void isEnabledAssertion() {
-        STRAssert.assertTrue("Check element '" + getName() + "' is enabled", isEnabled());
+        VTFAssert.assertThat(String.format("Check element '%s' is enabled", getName()), is(isEnabled()));
     }
 
     public void isNotEnabledAssertion() {
-        STRAssert.assertFalse("Check element '" + getName() + "' is not enabled", !isEnabled());
+        VTFAssert.assertThat(String.format("Check element '%s' is not enabled", getName()), not(isEnabled()));
     }
 
     public void isNotDisplayedAssertion() {
         if (!isPresent()) {
-            STRAssert.assertTrue(String.format("Check element '%s' is not present", getName()), true);
+            VTFAssert.assertThat(String.format("Check element '%s' is not present", getName()), true);
             return;
         }
-        STRAssert.assertTrue(String.format("Check element '%s' is not displayed", getName()), !isDisplayed());
+        VTFAssert.assertThat(String.format("Check element '%s' is not displayed", getName()), !isDisplayed());
     }
 
     public void isNotVisibleAssertion() {
-        STRAssert.assertFalse(String.format("Check element '%s' is not visible", getName()), !isVisible());
+        VTFAssert.assertThat(String.format("Check element '%s' is not visible", getName()), not(isVisible()));
     }
 
     public void submit() {
@@ -328,7 +329,7 @@ public class YandexElement extends TypifiedElement {
                 .toString().equals("complete");
         try {
             WebDriverWait wait = new WebDriverWait(Objects.requireNonNull(getDriver()), seconds);
-//            wait.pollingEvery(Duration.of(1, ChronoUnit.SECONDS)).until(expectation);
+            wait.pollingEvery(Duration.of(1, ChronoUnit.SECONDS)).until(expectation);
         } catch (Exception error) {
             logger.warn("Timeout waiting for Page Load Request to Complete.", error);
         }
