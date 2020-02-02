@@ -12,7 +12,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.yandex.qatools.htmlelements.element.TypifiedElement;
+import ru.yandex.qatools.htmlelements.element.HtmlElement;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -28,7 +28,7 @@ import static core.util.ScreenshotUtils.unhighlightElement;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 
-public class YandexElement extends TypifiedElement {
+public class YandexElement extends HtmlElement {
 
     private static final String SCROLL_TO_ELEMENT_INTO_MIDDLE = "var viewPortHeight = " +
             "Math.max(document.documentElement.clientHeight, window.innerHeight || 0);" +
@@ -49,14 +49,19 @@ public class YandexElement extends TypifiedElement {
     private static final int ATTEMPTS_NUMBER = 3;
     private Logger logger = LoggerFactory.getLogger(YandexElement.class.getSimpleName());
 
-    public YandexElement(WebElement wrappedElement) {
-        super(wrappedElement);
-    }
+    // FIXME: 2/2/2020 uncomment constructor
+//    public YandexElement(WebElement wrappedElement) {
+//        super(wrappedElement);
+//    }
 
-    public YandexElement(WebElement wrappedElement, String name) {
-        super(wrappedElement);
-        setName(name);
-    }
+//    public YandexElement (WebDriver driver) {
+//        PageFactory.initElements(new HtmlElementDecorator(new HtmlElementLocatorFactory(driver)), this);
+//    }
+
+//    public YandexElement(WebElement wrappedElement, String name) {
+//        super(wrappedElement);
+//        setName(name);
+//    }
 
     @Override
     public void click() {
@@ -109,10 +114,6 @@ public class YandexElement extends TypifiedElement {
         new Actions(getDriver()).moveToElement(getWrappedElement()).build().perform();
         unhighlightElement(getDriver(), this);
         WaitUtils.waitForRetry(300);
-    }
-
-    public String getText() {
-        return super.getText().trim();
     }
 
     public void clickAndSwitchToNewWindow() {
@@ -181,26 +182,37 @@ public class YandexElement extends TypifiedElement {
         VTFAssert.assertThat(String.format("Check element '%s' is not visible", getName()), not(isVisible()));
     }
 
+    @Override
+    public String getText() {
+        return super.getText().trim();
+    }
+
+    @Override
     public void submit() {
         execute(() -> this.getWrappedElement().submit());
     }
 
+    @Override
     public void sendKeys(CharSequence... keysToSend) {
         execute(() -> this.getWrappedElement().sendKeys(keysToSend));
     }
 
+    @Override
     public void clear() {
         execute(() -> this.getWrappedElement().clear());
     }
 
+    @Override
     public boolean isSelected() {
         return execute(() -> this.getWrappedElement().isSelected());
     }
 
+    @Override
     public boolean isEnabled() {
         return execute(() -> this.getWrappedElement().isEnabled());
     }
 
+    @Override
     public boolean isDisplayed() {
         return execute(() -> this.getWrappedElement().isDisplayed());
     }

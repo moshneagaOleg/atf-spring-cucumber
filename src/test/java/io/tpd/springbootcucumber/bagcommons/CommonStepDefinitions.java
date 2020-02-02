@@ -47,7 +47,9 @@ public class CommonStepDefinitions {
 
     @When("user clicks on the {string} from {string} page")
     public void userClicksOnTheElement(String elementName, String pageName) {
-        sp.waitForClickable(PageScanner.getElementByName(webDriver, elementName, pageName), 10).click();
+        // FIXME: 2/2/2020 resolve
+//        sp.waitForClickable(PageScanner.getElementByName(webDriver, elementName, pageName), 10).click();
+        PageScanner.getElementByName(webDriver, elementName, pageName).click();
     }
 
 }

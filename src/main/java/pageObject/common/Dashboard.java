@@ -1,12 +1,10 @@
 package pageObject.common;
 
-import core.annotations.Locator;
 import core.annotations.PageAccessor;
 import core.element.YandexElement;
 import core.page.AbstractPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
-import pageObject.wgu.MainMenuAuthComponent;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.annotations.Timeout;
 
@@ -18,9 +16,6 @@ public final class Dashboard extends AbstractPage {
     @Timeout(30)
     @FindBy(xpath = "//h4[text()='My Courses']")
     public YandexElement myCoursesLnk;
-
-    @Locator(name = "mainMenu")
-    public MainMenuAuthComponent mainMenu;
 
     public Dashboard(WebDriver driver) {
         super(driver);

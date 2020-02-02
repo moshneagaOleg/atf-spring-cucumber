@@ -1,4 +1,4 @@
-package core.element;
+package core.page;
 
 public interface Module {
 

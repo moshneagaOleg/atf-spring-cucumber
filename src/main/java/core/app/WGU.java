@@ -20,6 +20,8 @@ public class WGU extends AbstractPage {
     private Dashboard dashboard = new Dashboard(driver);
     private MainPage mainPage = new MainPage(driver);
     private SupportRequest supportRequest = new SupportRequest(driver);
+    private AdminLoginPage adminLoginPage = new AdminLoginPage(driver);
+//    private LoginForm loginForm = new LoginForm(driver);
 
     private WGU(WebDriver driver) {
         super(driver);
@@ -33,6 +35,7 @@ public class WGU extends AbstractPage {
     public HelpCenterWelcome helpCenterWelcome() {
         return helpCenterWelcome.initOnDemand();
     }
+
     public Login login() {
         return login.initOnDemand();
     }
@@ -43,5 +46,6 @@ public class WGU extends AbstractPage {
         return mainPage.initOnDemand();
     }
     public SupportRequest supportRequest() { return supportRequest.initOnDemand(); }
-
+    public AdminLoginPage adminLoginPage() { return adminLoginPage.initOnDemand(); }
+//    public LoginForm loginForm() { return loginForm.initOnDemand(); }
 }

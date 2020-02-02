@@ -2,6 +2,8 @@ package core.factory;
 
 //@Component
 public class PageScanner {
+
+    // FIXME: 2/2/2020 clean up
 //    private static String PAGE_PACKAGE;
 //
 //    @Autowired
