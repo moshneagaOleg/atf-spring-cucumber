@@ -1,7 +1,7 @@
 package core.scanner;
 
 import core.annotations.PageAccessor;
-import core.element.YandexButton;
+import core.element.YandexElement;
 import core.page.AbstractPage;
 import io.tpd.springbootcucumber.Config;
 import lombok.SneakyThrows;
@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
 import org.reflections.Reflections;
 import ru.yandex.qatools.htmlelements.annotations.Name;
-import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 
 import java.lang.reflect.Field;
 import java.util.Set;
@@ -25,7 +24,7 @@ public class PageScanner {
      * @return YandexElement
      */
     @SneakyThrows
-    public static TypifiedElement getElementByName(WebDriver driver, String elementName, String pageName) {
+    public static YandexElement getElementByName(WebDriver driver, String elementName, String pageName) {
         Reflections reflections = new Reflections(String.format("pageObject.%s", Config.TENANT));
         Set<Class<? extends AbstractPage>> classes = reflections.getSubTypesOf(AbstractPage.class);
         for (Class<? extends AbstractPage> pageObject : classes) {
@@ -39,14 +38,14 @@ public class PageScanner {
                             if (StringUtils.equalsIgnoreCase(componentField.getAnnotation(Name.class).value(), elementName)) {
 
                                 // FIXME: 2/2/2020 resolve page with constructor
-                                return (YandexButton) componentField.get(field.getType());
+//                                return (YandexButton) componentField.get(field.getType());
                             }
                         }
                     } else {
                         if (StringUtils.equalsIgnoreCase(field.getAnnotation(Name.class).value(), elementName)) {
                             Object page = pageObject.getConstructor(WebDriver.class).newInstance(driver);
                             // FIXME: 2/2/2020 return custom element
-//                            return (YandexElement) field.get(page);
+                            return (YandexElement) field.get(page);
                         }
                     }
                 }
