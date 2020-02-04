@@ -2,6 +2,7 @@ package io.tpd.springbootcucumber.bagcommons;
 
 import core.app.abstractApps.AbstractStudentPortal;
 import core.assertation.VTFAssert;
+import core.element.YandexElement;
 import core.factory.PageCreator;
 import core.page.AbstractPage;
 import core.scanner.PageScanner;
@@ -14,6 +15,8 @@ import io.tpd.springbootcucumber.ScenarioContext;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import ru.yandex.qatools.htmlelements.element.TypifiedElement;
+import ru.yandex.qatools.htmlelements.utils.HtmlElementUtils;
 
 public class CommonStepDefinitions {
 
@@ -47,9 +50,12 @@ public class CommonStepDefinitions {
 
     @When("user clicks on the {string} from {string} page")
     public void userClicksOnTheElement(String elementName, String pageName) {
-        // FIXME: 2/2/2020 resolve
-//        sp.waitForClickable(PageScanner.getElementByName(webDriver, elementName, pageName), 10).click();
-        PageScanner.getElementByName(webDriver, elementName, pageName).click();
+        Object element = PageScanner.getElementByName(webDriver, elementName, pageName);
+        if (HtmlElementUtils.isHtmlElement(element)) {
+            WaitUtils.waitForClickable(webDriver, (YandexElement) element, 10).click();
+        } else {
+            WaitUtils.waitForClickable(webDriver, (TypifiedElement) element, 10).click();
+        }
     }
 
 }

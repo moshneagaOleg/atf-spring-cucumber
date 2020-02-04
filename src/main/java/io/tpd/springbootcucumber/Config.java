@@ -36,6 +36,15 @@ public class Config {
     @Value("${commonPassword}")
     private String commonPassword;
 
+    @Value("${elementWait}")
+    private int elementWait;
+
+    @Value("${pageLoadWait}")
+    private int pageLoadWait;
+
+    @Value("${jsScriptWait}")
+    private int jsScriptWait;
+
     /**
      * @return ex: wgu, csu, ftk ...
      */

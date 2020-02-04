@@ -6,9 +6,6 @@ env.name: qa
 ---
 browser: chrome
 ---
-basicUser: auto+do-not-touch-this-user@straighterline.com
-commonPassword: Secretpwd@1
----
 spring:
   profiles: wgu
 datasource:
@@ -39,3 +36,10 @@ datasource:
   name: Feature
   url: https://${env.name}.feat.brighthorizons.straighterline.net
 #  env.name = en-13220
+---
+basicUser: auto+do-not-touch-this-user@straighterline.com
+commonPassword: Secretpwd@1
+---
+elementWait: 5
+pageLoadWait: 120
+jsScriptWait: 120

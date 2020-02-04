@@ -2,15 +2,14 @@ package pageObject.wgu.compoment;
 
 import core.element.YandexButton;
 import core.element.YandexTextInput;
-import core.page.AbstractComponent;
-import core.page.Module;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.annotations.Timeout;
+import ru.yandex.qatools.htmlelements.element.HtmlElement;
 
 @Name("Login form")
 @FindBy(xpath = "//form")
-public class LoginForm extends AbstractComponent implements Module {
+public class LoginForm extends HtmlElement {
 
     @Name("Email Input")
     @Timeout(30)
@@ -26,9 +25,5 @@ public class LoginForm extends AbstractComponent implements Module {
     @Timeout(30)
     @FindBy(xpath = "//button[@type='submit' and contains(text(),'Sign in')]")
     public YandexButton signInBtn;
-
-    public LoginForm() {
-//        PageFactory.initElements(getDriver(), this);
-    }
 
 }

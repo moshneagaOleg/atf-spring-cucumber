@@ -1,8 +1,12 @@
 package core.util;
 
 import core.element.YandexElement;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -46,6 +50,28 @@ public abstract class WaitUtils {
         } catch (InterruptedException e) {
             throw new RuntimeException("Thread sleep in the retry interval was interrupted", e);
         }
+    }
+
+    public static <T extends YandexElement> T waitFor(WebDriver driver, T element, int seconds) {
+        new WebDriverWait(driver, seconds).until(ExpectedConditions.visibilityOf(element));
+        element.isDisplayedAssertion();
+        return element;
+    }
+
+    public static <T extends YandexElement> T waitForClickable(WebDriver driver, T element, int seconds) {
+        new WebDriverWait(driver, seconds).until(ExpectedConditions.elementToBeClickable(element));
+        element.isDisplayedAssertion();
+        return element;
+    }
+
+    public static <T extends TypifiedElement> T waitFor(WebDriver driver, T element, int seconds) {
+        new WebDriverWait(driver, seconds).until(ExpectedConditions.visibilityOf(element));
+        return element;
+    }
+
+    public static <T extends TypifiedElement> T waitForClickable(WebDriver driver, T element, int seconds) {
+        new WebDriverWait(driver, seconds).until(ExpectedConditions.elementToBeClickable(element));
+        return element;
     }
 
 }
