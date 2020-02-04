@@ -31,13 +31,13 @@ public class PageCreator {
 
     @SneakyThrows
     public <T extends AbstractPage> T createPage(Class<T> type) {
-        PageAccessor[] pageAnnotations = type.getDeclaredAnnotationsByType(PageAccessor.class);
-        if (pageAnnotations.length == 0) {
+        if (type.isAnnotationPresent(PageAccessor.class)) {
+            PageAccessor pageAccessor = type.getAnnotation(PageAccessor.class);
+            String fullUrl = baseUrl + StringUtil.addSlash(pageAccessor.url());
+            return ReflectionUtils.newInstance(type, this.driver, fullUrl, pageAccessor.name());
+        } else {
             throw new VTFException("Class of type [" + type + "] is not a page object.\r\nMissing annottion " + "PageAccessor annotation");
         }
-        PageAccessor pageAccessor = pageAnnotations[0];
-        String url = baseUrl + StringUtil.addSlash(pageAccessor.url());
-        return ReflectionUtils.newInstance(type, this.driver, url, pageAccessor.name());
     }
 
     public void setBaseUrl(String baseUrl) {

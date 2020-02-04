@@ -1,5 +1,6 @@
 package core.driver;
 
+import core.exceptions.VTFException;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +24,7 @@ public enum Browser {
     public static Browser get(String browserName) {
         return Stream.of(Browser.values())
                 .filter(browser -> StringUtils.equalsIgnoreCase(browser.name(), browserName))
-                .findFirst().orElseThrow(() -> new RuntimeException(
+                .findFirst().orElseThrow(() -> new VTFException(
                         String.format("[%s] browser does not match with any of types in the [%s] enum",
                                 browserName, Browser.class.getSimpleName())));
     }

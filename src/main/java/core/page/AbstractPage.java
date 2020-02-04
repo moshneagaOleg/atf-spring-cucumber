@@ -1,14 +1,17 @@
 package core.page;
 
 import core.element.YandexElement;
+import core.util.WaitUtils;
+import lombok.SneakyThrows;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementDecorator;
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementLocatorFactory;
+
+import java.util.function.Supplier;
 
 public abstract class AbstractPage implements Page {
     protected WebDriver driver;
@@ -61,11 +64,19 @@ public abstract class AbstractPage implements Page {
                 '}';
     }
 
+    @Override
+    @SneakyThrows
+    public boolean isReady() {
+        Supplier<Boolean> pageIsReady = ()-> ((JavascriptExecutor) driver).executeScript("return document.readyState")
+                .toString().equals("complete");
+        return WaitUtils.waitUntilCondition(pageIsReady, true, 30);
+    }
+
     public <T extends AbstractPage> T initOnDemand() {
         PageFactory.initElements(new HtmlElementDecorator(new HtmlElementLocatorFactory(driver)), this);
+        // FIXME: 2/4/2020 isReady a good way to stable test, but take more time ex: wgu.main().button get initOnDemand
         isReady();
         wait = new WebDriverWait(driver, 30);
-
         return (T) this;
     }
 
@@ -74,27 +85,6 @@ public abstract class AbstractPage implements Page {
         element.isDisplayedAssertion();
         return element;
     }
-
-    @Override
-    public boolean isReady() {
-        try {
-            ExpectedCondition<Boolean> expectation = driver ->
-                    ((JavascriptExecutor) driver).executeScript("return document.readyState").toString().equals("complete");
-            WebDriverWait wait = new WebDriverWait(driver, 10);
-//            wait.pollingEvery(Duration.of(1, ChronoUnit.SECONDS)).until(expectation);
-            return true;
-        } catch (Exception error) {
-            error.printStackTrace();
-        }
-        return false;
-    }
-
-
-//    public <T extends YandexElement> T waitFor(T element, int seconds) {
-//        new WebDriverWait(driver, seconds).until(ExpectedConditions.visibilityOf(element));
-//        element.isDisplayedAssertion();
-//        return element;
-//    }
 
     public <T extends YandexElement> T waitForClickable(T element, int seconds) {
         new WebDriverWait(driver, seconds).until(ExpectedConditions.elementToBeClickable(element));
