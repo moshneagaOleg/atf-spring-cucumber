@@ -345,6 +345,7 @@ public class YandexElement extends HtmlElement {
         }
     }
 
+    // FIXME: 2/4/2020 optimization
     private void waitUntilPageLoaded(int seconds) {
         ExpectedCondition<Boolean> expectation = driver -> executeJavaScript(getDriver(), "return document.readyState")
                 .toString().equals("complete");
@@ -356,12 +357,14 @@ public class YandexElement extends HtmlElement {
         }
     }
 
+    // FIXME: 2/4/2020 remove
     public <T extends YandexElement> T waitFor(T element, int seconds) {
         new WebDriverWait(getDriver(), seconds).until(ExpectedConditions.visibilityOf(element));
         element.isDisplayedAssertion();
         return element;
     }
 
+    // FIXME: 2/4/2020 remove
     public <T extends YandexElement> T waitForClickable(T element, int seconds) {
         new WebDriverWait(getDriver(), seconds).until(ExpectedConditions.elementToBeClickable(element));
         element.isDisplayedAssertion();

@@ -17,9 +17,6 @@ public final class Dashboard extends AbstractPage {
     @FindBy(xpath = "//h4[text()='My Courses']")
     public YandexElement myCoursesLnk;
 
-//    @Locator(name = "mainMenu")
-//    public MainMenuAuthComponent mainMenu;
-
     public Dashboard(WebDriver driver) {
         super(driver);
     }

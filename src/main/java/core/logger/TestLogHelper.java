@@ -4,6 +4,8 @@ import org.slf4j.MDC;
 
 public class TestLogHelper {
 
+    // FIXME: 2/4/2020 or remove or use
+
     private static final String TEST_NAME = "testname";
 
     public static void startTestLogging(String name) {

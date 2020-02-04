@@ -71,9 +71,6 @@ public final class HelpCenterWelcome extends AbstractPage {
             "p[normalize-space()='Comprehensive guide to all student policies and procedures']")
     public YandexElement studentPoliciesLnk;
 
-//    @Locator(name = "header", xpath = "//header")
-//    public Header header;
-
     public HelpCenterWelcome(WebDriver driver) {
         super(driver);
     }
