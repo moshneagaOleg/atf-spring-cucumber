@@ -1,105 +1,71 @@
 package core.factory;
 
-//@Component
+import core.annotations.PageAccessor;
+import core.page.AbstractPage;
+import io.tpd.springbootcucumber.Config;
+import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.WebDriver;
+import org.reflections.Reflections;
+import ru.yandex.qatools.htmlelements.annotations.Name;
+import ru.yandex.qatools.htmlelements.loader.HtmlElementLoader;
+
+import java.lang.reflect.Field;
+import java.util.Set;
+
 public class PageScanner {
 
-    // FIXME: 2/2/2020 clean up
-//    private static String PAGE_PACKAGE;
-//
-//    @Autowired
-//    @Qualifier("pageObjectsPackage")
-//    public void setPagesPackage(String pagesPackage) {
-//        PAGE_PACKAGE = pagesPackage;
-//    }
-//
-//    private static Predicate<Class<?>> isPageWithName(String name) {
-//        return clazz -> clazz.getDeclaredAnnotation(PageAccessor.class).name().equals(name);
-//    }
-//
-//    private static Predicate<Class<?>> isPageWithUrl(final String baseUrl, final String url) {
-//        return clazz -> url.startsWith(baseUrl + StringUtil.addSlash(clazz.getDeclaredAnnotation(PageAccessor.class).url()));
-//    }
-//
-//    private static Predicate<Field> isElementWithName(String name) {
-//        return field -> field.getAnnotation(Locator.class).name().equals(name);
-//    }
-//
-//    private static Supplier pageWithNameNotFound(String name) {
-//        return () -> new Exception("Could not find page with name [" + name + "]");
-//    }
-//
-//    private static Supplier pageWithUrlNotFound(String url) {
-//        return () -> new Exception("Could not find page with url [" + url + "]");
-//    }
-//
-//    public static Class<? extends AbstractPage> getPageByName(final String name) {
-//        ConfigurationBuilder builder = new ConfigurationBuilder()
-//                .setUrls(ClasspathHelper.forPackage(PAGE_PACKAGE))
-//                .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
-//        Reflections reflections = new Reflections(builder);
-//
-//        Set<Class<?>> typesAnnotatedWith = reflections.getTypesAnnotatedWith(PageAccessor.class);
-//        Optional<Class<?>> first = typesAnnotatedWith.stream().filter(isPageWithName(name)).findFirst();
-//        return (Class<? extends AbstractPage>) first.orElseThrow(pageWithNameNotFound(name));
-//    }
-//
-//    public static Class<? extends AbstractPage> getPageByUrl(final String baseUrl, final String url) {
-//        ConfigurationBuilder builder = new ConfigurationBuilder()
-//                .setUrls(ClasspathHelper.forPackage(PAGE_PACKAGE))
-//                .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
-//        Reflections reflections = new Reflections(builder);
-//
-//        Set<Class<?>> typesAnnotatedWith = reflections.getTypesAnnotatedWith(PageAccessor.class);
-//        Optional<Class<?>> first = typesAnnotatedWith.stream().filter(isPageWithUrl(baseUrl, url)).findFirst();
-//        return (Class<? extends AbstractPage>) first.orElseThrow(pageWithUrlNotFound(url));
-//    }
-//
-//    public static <T extends AbstractComponent> T getPageElementByName(String name, Page page) throws Exception {
-//        try {
-//            T t = null;
-//            List<Field> fields = extractFieldsByPredicate(page.getClass(), isElement());
-//
-//            for (Field field : fields) {
-//                field.setAccessible(true);
-//                Locator locator = field.getDeclaredAnnotation(Locator.class);
-//
-//                if (locator.name().equals(name)) {
-//                    t = (T) field.get(page);
-//                    break;
-//                }
-//
-//                if (Arrays.asList(field.getType().getInterfaces()).contains(Module.class)) {
-//                    Module module = (Module) field.get(page);
-//                    t = getModuleElementByName(name, module);
-//                    if (t != null) break;
-//                }
-//            }
-//
-//            return t;
-//        } catch (IllegalAccessException e) {
-//            throw new Exception("Failed to get element with name [" + name + "] from page [" + page.name() + "]", e);
-//        }
-//    }
-//
-//    public static <T extends AbstractComponent> T getModuleElementByName(String name, Module module) throws Exception {
-//        T t = null;
-//        try {
-//            List<Field> controls = extractFieldsByPredicate(module.getClass(), isElement());
-//            for (Field field : controls) {
-//                field.setAccessible(true);
-//                Locator locator = field.getDeclaredAnnotation(Locator.class);
-//                if (locator.name().equals(name)) {
-//                    t = (T) field.get(module);
-//                    break;
-//                } else if (Arrays.asList(field.getType().getInterfaces()).contains(Module.class)) {
-//                    Module m = (Module) field.get(module);
-//                    t = getModuleElementByName(name, m);
-//                    if (t != null) break;
-//                }
-//            }
-//            return t;
-//        } catch (IllegalAccessException e) {
-//            throw new Exception("Failed to retreive component with name [" + name + "] from module [" + module.getName() + "]", e);
-//        }
-//    }
+    /**
+     * Get element from page object by 'element name' and 'page name' using annotation @Name
+     *
+     * @param driver      WebDriver
+     * @param elementName String Ex: close button, it annotated in page object
+     * @param pageName    String Ex: Home, it annotated above page object
+     * @return YandexElement
+     */
+    @SneakyThrows
+    public static Object getElementByName(WebDriver driver, String elementName, String pageName) {
+        Reflections reflections = new Reflections(String.format("pageObject.%s", Config.TENANT));
+        Set<Class<? extends AbstractPage>> classes = reflections.getSubTypesOf(AbstractPage.class);
+        for (Class<? extends AbstractPage> pageObject : classes) {
+            if (pageObject.isAnnotationPresent(PageAccessor.class))
+                if (StringUtils.equals(pageObject.getAnnotation(PageAccessor.class).name(), pageName))
+                    for (Field field : pageObject.getDeclaredFields()) {
+                        field.setAccessible(true);
+                        if (field.isAnnotationPresent(Name.class)) {
+                            if (StringUtils.equalsIgnoreCase(field.getAnnotation(Name.class).value(), elementName)) {
+                                Object page = HtmlElementLoader.createPageObject(pageObject, driver);
+                                return field.get(page);
+                            }
+                        } else if (!field.isAnnotationPresent(Name.class)) {
+                            for (Field componentField : field.getType().getFields()) {
+                                componentField.setAccessible(true);
+                                if (componentField.isAnnotationPresent(Name.class))
+                                    if (StringUtils.equalsIgnoreCase(componentField.getAnnotation(Name.class).value(), elementName)) {
+                                        return componentField.get(HtmlElementLoader.create(field.getType(), driver));
+                                    }
+                            }
+                        }
+                    }
+        }
+        throw new RuntimeException(String.format("Error during getting element by elementName: '%s' is not found ", elementName));
+    }
+
+    /**
+     * Get page by name from some package using tenant
+     * @param pageName String ex: getPageByName("Index")
+     * @return Class AbstractPage
+     */
+    @SneakyThrows
+    public static Class<? extends AbstractPage> getPageByName(String pageName) {
+        Reflections reflections = new Reflections(String.format("pageObject.%s", Config.TENANT));
+        Set<Class<? extends AbstractPage>> classes = reflections.getSubTypesOf(AbstractPage.class);
+        for (Class<? extends AbstractPage> pageObject : classes) {
+            if (pageObject.isAnnotationPresent(PageAccessor.class))
+                if (StringUtils.equals(pageObject.getAnnotation(PageAccessor.class).name(), pageName))
+                    return pageObject;
+        }
+        throw new RuntimeException(String.format("Error during getting page by pageName: '%s' is not found ", pageName));
+    }
+
 }

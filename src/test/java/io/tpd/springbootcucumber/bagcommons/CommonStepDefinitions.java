@@ -5,7 +5,7 @@ import core.assertation.VTFAssert;
 import core.element.YandexElement;
 import core.factory.PageCreator;
 import core.page.AbstractPage;
-import core.scanner.PageScanner;
+import core.factory.PageScanner;
 import core.util.WaitUtils;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
