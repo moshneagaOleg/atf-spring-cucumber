@@ -27,4 +27,8 @@ public class LoginForm extends AbstractComponent implements Module {
     @FindBy(xpath = "//button[@type='submit' and contains(text(),'Sign in')]")
     public YandexButton signInBtn;
 
+    public LoginForm() {
+//        PageFactory.initElements(getDriver(), this);
+    }
+
 }
