@@ -7,9 +7,9 @@ Feature: Support Request
     And user is on the 'Dashboard' page
     And user open page 'Support Requests'
     And user is on the 'Support Requests' page
-    Then user complete '<positive>' request
+    Then user complete '<scenario>' request
 
     Examples:
-      | positive |
+      | scenario |
       | true     |
       | false    |

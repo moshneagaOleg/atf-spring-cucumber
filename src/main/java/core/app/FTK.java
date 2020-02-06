@@ -1,19 +1,14 @@
 package core.app;
 
-import core.element.YandexElement;
-import core.page.AbstractPage;
+import core.app.abstractApps.AbstractStudentPortal;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import pageObject.ftk.*;
+import pageObject.ftk.Dashboard;
+import pageObject.ftk.HelpCenterWelcome;
+import pageObject.ftk.Login;
+import pageObject.ftk.MainPage;
 import pageObject.ftk.helpCenter.SupportRequest;
 
-import java.util.List;
-
-public class FTK extends AbstractPage {
-
-    @FindBy(xpath = "//div[contains(@class,'toasted toasted-primary success')]")
-    public List<YandexElement> successMsgs;
+public class FTK extends AbstractStudentPortal {
 
     private HelpCenterWelcome helpCenterWelcome = new HelpCenterWelcome(driver);
     private Login login = new Login(driver);
@@ -21,9 +16,8 @@ public class FTK extends AbstractPage {
     private MainPage mainPage = new MainPage(driver);
     private SupportRequest supportRequest = new SupportRequest(driver);
 
-    private FTK(WebDriver driver) {
+    public FTK(WebDriver driver) {
         super(driver);
-        super.wait = new WebDriverWait(driver, 30);
     }
 
     public static FTK initApp(WebDriver driver) {
@@ -33,15 +27,15 @@ public class FTK extends AbstractPage {
     public HelpCenterWelcome helpCenterWelcome() {
         return helpCenterWelcome.initOnDemand();
     }
-    public Login login() {
-        return login.initOnDemand();
-    }
     public Dashboard dashboard() {
         return dashboard.initOnDemand();
     }
     public MainPage mainPage() {
         return mainPage.initOnDemand();
     }
+
+    @Override
     public SupportRequest supportRequest() { return supportRequest.initOnDemand(); }
+    public Login login() { return login.initOnDemand(); }
 
 }

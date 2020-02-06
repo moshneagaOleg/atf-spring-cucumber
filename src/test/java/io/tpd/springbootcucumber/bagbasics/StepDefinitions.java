@@ -1,8 +1,5 @@
 package io.tpd.springbootcucumber.bagbasics;
 
-import core.app.CSU;
-import core.app.FTK;
-import core.app.HRZ;
 import core.app.WGU;
 import core.app.abstractApps.AbstractStudentPortal;
 import core.assertation.VTFAssert;
@@ -53,15 +50,12 @@ public class StepDefinitions {
     public void userLoginOnThePage() {
         webDriver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
         sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
-        sp.login().emailInp.sendKeys(config.getBasicUser());
-        sp.login().passwordInp.sendKeys(config.getCommonPassword());
-        sp.login().continueBtn.click();
+        sp.login().login(config.getBasicUser(), config.getCommonPassword());
     }
 
     @And("user logOut")
     public void userLogOut() {
-        sp.waitForClickable(sp.mainMenuAuth().photoBtn, 10).click();
-        sp.waitForClickable(sp.mainMenuAuth().logoutLnk, 10).click();
+        sp.login().mainMenuAuth.logout();
     }
 
     @Then("user verify {string}")
@@ -87,36 +81,12 @@ public class StepDefinitions {
 
     @And("user complete {string} request")
     public void userCompleteRequest(String isPositive) {
+        sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
+
         if (Boolean.valueOf(isPositive)) {
-            switch (Config.TENANT) {
-                case "wgu":
-                    WGU wgu = (WGU) scenarioContext.getData(PageKeys.WGU_INIT);
-                    wgu.supportRequest().complete();
-                case "csu":
-                    CSU csu = (CSU) scenarioContext.getData(PageKeys.CSU_INIT);
-                    csu.supportRequest().complete();
-                case "ftk":
-                    FTK ftk = (FTK) scenarioContext.getData(PageKeys.FTK_INIT);
-                    ftk.supportRequest().complete();
-                case "hrz":
-                    HRZ hrz = (HRZ) scenarioContext.getData(PageKeys.HRZ_INIT);
-                    hrz.supportRequest().complete();
-            }
+            sp.supportRequest().complete();
         } else {
-            switch (Config.TENANT) {
-                case "wgu":
-                    WGU wgu = (WGU) scenarioContext.getData(PageKeys.WGU_INIT);
-                    wgu.supportRequest().complete();
-                case "csu":
-                    CSU csu = (CSU) scenarioContext.getData(PageKeys.CSU_INIT);
-                    csu.supportRequest().complete();
-                case "ftk":
-                    FTK ftk = (FTK) scenarioContext.getData(PageKeys.FTK_INIT);
-                    ftk.supportRequest().complete();
-                case "hrz":
-                    HRZ hrz = (HRZ) scenarioContext.getData(PageKeys.HRZ_INIT);
-                    hrz.supportRequest().complete();
-            }
+            sp.supportRequest().completeNegative();
         }
     }
 
@@ -128,5 +98,11 @@ public class StepDefinitions {
         wgu.adminLoginPage().loginForm.passwordInp.sendKeys(RandomStringUtils.randomAlphanumeric(8));
         wgu.adminLoginPage().loginForm.signInBtn.click();
         System.out.println("Clicked on button");
+    }
+
+    @And("user blablabla")
+    public void userBlablabla() {
+        WGU wgu = (WGU) scenarioContext.getData(PageKeys.WGU_INIT);
+        wgu.mainPage().footer.gnrcLink.resolveLocator("Resources", "Help Center").click();
     }
 }

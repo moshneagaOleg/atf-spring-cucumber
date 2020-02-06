@@ -1,19 +1,11 @@
 package core.app;
 
-import core.element.YandexElement;
-import core.page.AbstractPage;
+import core.app.abstractApps.AbstractStudentPortal;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import pageObject.csu.*;
 import pageObject.csu.helpCenter.SupportRequest;
 
-import java.util.List;
-
-public class CSU extends AbstractPage {
-
-    @FindBy(xpath = "//div[contains(@class,'toasted toasted-primary success')]")
-    public List<YandexElement> successMsgs;
+public class CSU extends AbstractStudentPortal {
 
     private MainMenuAuth mainMenuAuth = new MainMenuAuth(driver);
     private HelpCenterWelcome helpCenterWelcome = new HelpCenterWelcome(driver);
@@ -22,32 +14,27 @@ public class CSU extends AbstractPage {
     private MainPage mainPage = new MainPage(driver);
     private SupportRequest supportRequest = new SupportRequest(driver);
 
-    private CSU(WebDriver driver) {
+    public CSU(WebDriver driver) {
         super(driver);
-        super.wait = new WebDriverWait(driver, 30);
     }
 
     public static CSU initApp(WebDriver driver) {
         return new CSU(driver);
     }
 
-    public MainMenuAuth mainMenuAuth() {
-        return mainMenuAuth.initOnDemand();
-    }
-    public HelpCenterWelcome helpCenterWelcome() {
-        return helpCenterWelcome.initOnDemand();
-    }
-    public Login login() {
-        return login.initOnDemand();
-    }
+    public MainMenuAuth mainMenuAuth() { return mainMenuAuth.initOnDemand(); }
+    public HelpCenterWelcome helpCenterWelcome() { return helpCenterWelcome.initOnDemand(); }
     public Dashboard dashboard() {
         return dashboard.initOnDemand();
     }
     public MainPage mainPage() {
         return mainPage.initOnDemand();
     }
+
+    @Override
     public SupportRequest supportRequest() {
         return supportRequest.initOnDemand();
     }
+    public Login login() { return login.initOnDemand(); }
 
 }

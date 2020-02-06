@@ -1,19 +1,14 @@
 package core.app;
 
-import core.element.YandexElement;
-import core.page.AbstractPage;
+import core.app.abstractApps.AbstractStudentPortal;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import pageObject.wgu.*;
-import pageObject.wgu.helpCenter.SupportRequest;
+import pageObject.hrz.Dashboard;
+import pageObject.hrz.HelpCenterWelcome;
+import pageObject.hrz.Login;
+import pageObject.hrz.MainPage;
+import pageObject.hrz.helpCenter.SupportRequest;
 
-import java.util.List;
-
-public class HRZ extends AbstractPage {
-
-    @FindBy(xpath = "//div[contains(@class,'toasted toasted-primary success')]")
-    public List<YandexElement> successMsgs;
+public class HRZ extends AbstractStudentPortal {
 
     private HelpCenterWelcome helpCenterWelcome = new HelpCenterWelcome(driver);
     private Login login = new Login(driver);
@@ -21,9 +16,8 @@ public class HRZ extends AbstractPage {
     private MainPage mainPage = new MainPage(driver);
     private SupportRequest supportRequest = new SupportRequest(driver);
 
-    private HRZ(WebDriver driver) {
+    public HRZ(WebDriver driver) {
         super(driver);
-        super.wait = new WebDriverWait(driver, 30);
     }
 
     public static HRZ initApp(WebDriver driver) {
@@ -33,15 +27,15 @@ public class HRZ extends AbstractPage {
     public HelpCenterWelcome helpCenterWelcome() {
         return helpCenterWelcome.initOnDemand();
     }
-    public Login login() {
-        return login.initOnDemand();
-    }
     public Dashboard dashboard() {
         return dashboard.initOnDemand();
     }
     public MainPage mainPage() {
         return mainPage.initOnDemand();
     }
+
+    @Override
     public SupportRequest supportRequest() { return supportRequest.initOnDemand(); }
+    public Login login() { return login.initOnDemand(); }
 
 }

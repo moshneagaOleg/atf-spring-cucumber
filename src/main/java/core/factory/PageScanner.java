@@ -53,17 +53,17 @@ public class PageScanner {
 
     /**
      * Get page by name from some package using tenant
+     *
      * @param pageName String ex: getPageByName("Index")
      * @return Class AbstractPage
      */
     @SneakyThrows
     public static Class<? extends AbstractPage> getPageByName(String pageName) {
         Reflections reflections = new Reflections(String.format("pageObject.%s", Config.TENANT));
-        Set<Class<? extends AbstractPage>> classes = reflections.getSubTypesOf(AbstractPage.class);
-        for (Class<? extends AbstractPage> pageObject : classes) {
-            if (pageObject.isAnnotationPresent(PageAccessor.class))
-                if (StringUtils.equals(pageObject.getAnnotation(PageAccessor.class).name(), pageName))
-                    return pageObject;
+        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(PageAccessor.class);
+        for (Class<?> pageObject : classes) {
+            if (StringUtils.equals(pageObject.getAnnotation(PageAccessor.class).name(), pageName))
+                return (Class<? extends AbstractPage>) pageObject;
         }
         throw new RuntimeException(String.format("Error during getting page by pageName: '%s' is not found ", pageName));
     }

@@ -1,4 +1,4 @@
-package pageObject.wgu.compoment;
+package pageObject.compoment;
 
 import core.element.YandexButton;
 import core.element.YandexTextInput;
@@ -13,17 +13,17 @@ public class LoginForm extends HtmlElement {
 
     @Name("Email Input")
     @Timeout(30)
-    @FindBy(xpath = "//input[@name='email' and @type='email' and @placeholder='Enter email']")
+    @FindBy(xpath = "//input[@type='email']")
     public YandexTextInput emailInp;
 
     @Name("Password Input")
     @Timeout(30)
-    @FindBy(xpath = "//input[@name='password' and @placeholder='Password']")
+    @FindBy(xpath = "//input[@type='password']")
     public YandexTextInput passwordInp;
 
     @Name("Sing In")
     @Timeout(30)
-    @FindBy(xpath = "//button[@type='submit' and contains(text(),'Sign in')]")
+    @FindBy(xpath = "//button[@type='submit']")
     public YandexButton signInBtn;
 
 }

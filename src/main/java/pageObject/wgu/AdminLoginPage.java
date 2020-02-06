@@ -3,7 +3,9 @@ package pageObject.wgu;
 import core.annotations.PageAccessor;
 import core.page.AbstractPage;
 import org.openqa.selenium.WebDriver;
-import pageObject.wgu.compoment.LoginForm;
+import pageObject.compoment.Footer;
+import pageObject.compoment.Header;
+import pageObject.compoment.LoginForm;
 import ru.yandex.qatools.htmlelements.annotations.Timeout;
 
 @Timeout(30)
@@ -18,5 +20,9 @@ public class AdminLoginPage extends AbstractPage {
         super(driver, url, name);
     }
 
+    public Header header;
+
     public LoginForm loginForm;
+
+    public Footer footer;
 }

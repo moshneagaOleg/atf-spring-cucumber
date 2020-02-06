@@ -39,6 +39,8 @@ public class UIHook {
     @Autowired()
     private ScenarioContext scenarioContext;
 
+    private AbstractStudentPortal studentPortal;
+
     private Logger logger = LoggerFactory.getLogger(UIHook.class);
     private WebDriver webDriver;
 
@@ -56,21 +58,27 @@ public class UIHook {
         logger.info("Current testName value is : '{}'", TestLogHelper.getCurrentLogName());
     }
 
-    @Before
+    @Before()
     public void openBrowser() {
         webDriver = DriverFactory.openBrowser(Browser.get(config.getBrowser()));
         scenarioContext.save(PageKeys.OPEN_DRIVER, webDriver);
         switch (Config.TENANT) {
             case "wgu":
+                scenarioContext.save(PageKeys.STUDENT_PORTAL_INIT, studentPortal = WGU.initApp(webDriver));
                 scenarioContext.save(PageKeys.WGU_INIT, WGU.initApp(webDriver));
             case "csu":
+                scenarioContext.save(PageKeys.STUDENT_PORTAL_INIT, studentPortal = CSU.initApp(webDriver));
                 scenarioContext.save(PageKeys.CSU_INIT, CSU.initApp(webDriver));
             case "ftk":
+                scenarioContext.save(PageKeys.STUDENT_PORTAL_INIT, studentPortal = FTK.initApp(webDriver));
                 scenarioContext.save(PageKeys.FTK_INIT, FTK.initApp(webDriver));
             case "hrz":
+                scenarioContext.save(PageKeys.STUDENT_PORTAL_INIT, studentPortal = HRZ.initApp(webDriver));
                 scenarioContext.save(PageKeys.HRZ_INIT, HRZ.initApp(webDriver));
         }
-        scenarioContext.save(PageKeys.STUDENT_PORTAL_INIT, AbstractStudentPortal.initApp(webDriver));
+
+
+//        scenarioContext.save(PageKeys.STUDENT_PORTAL_INIT, AbstractStudentPortal(webDriver));
     }
 
     @After
