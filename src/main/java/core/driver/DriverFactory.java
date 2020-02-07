@@ -20,8 +20,6 @@ public class DriverFactory {
 
     private static final String DRIVERS = "drivers";
     private static final String BROWSER_NAME = "chrome";
-    private static final String pathToDriver = "C:\\Users\\omosneaga\\Desktop\\spring-boot-cucumber-master\\" +
-            "src\\main\\resources\\drivers\\windows\\chromedriver.exe";
     private static final String CI_MODE = "ci";
     private static Logger logger = LoggerFactory.getLogger(DriverFactory.class);
 
@@ -61,11 +59,9 @@ public class DriverFactory {
     }
 
     private static WebDriver instantiateDriver(@NonNull Browser browser, String... arguments) {
-        // FIXME: 1/31/2020 current implementation working for all runMode
         if (!CI_MODE.equalsIgnoreCase(System.getProperty("runMode"))) {
-//            String pathToDriver = getDriverPath(browser);
-            // FIXME: 1/27/2020 get relative path
-            System.setProperty(browser.driverProperty, pathToDriver);
+            String path = DriverFactory.class.getClassLoader().getResource(getDriverPath(browser)).getPath();
+            System.setProperty(browser.driverProperty, path);
         }
         switch (browser) {
             case CHROME:
