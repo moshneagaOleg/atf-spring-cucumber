@@ -49,6 +49,7 @@ public class YandexElement extends HtmlElement {
     private static final int ATTEMPTS_NUMBER = 3;
     private Logger logger = LoggerFactory.getLogger(YandexElement.class.getSimpleName());
 
+    // FIXME: 2/7/2020 remove
 //    /**
 //     * Specifies wrapped {@link WebElement}.
 //     *

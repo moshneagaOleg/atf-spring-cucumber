@@ -13,6 +13,9 @@ public class YandexButton extends Button {
         super(wrappedElement);
     }
 
+
+    // FIXME: 2/7/2020 make single parent Element with all methods and use it for all child classes
+
     @Override
     public void click() {
         super.click();

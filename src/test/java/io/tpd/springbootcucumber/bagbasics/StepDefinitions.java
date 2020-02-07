@@ -56,15 +56,18 @@ public class StepDefinitions {
         sp.login().mainMenuAuth.logout();
     }
 
-    @Then("user verify {string}")
-    public void userVerifyPageTitle(String pageTitle) {
-        String xPath = String.format("//*[contains(text(), '%s')]", pageTitle);
-        // FIXME: 2/2/2020 resolve
-//        YandexElement title = new YandexElement(webDriver.findElements(By.xpath(xPath)).get(0));
-//        Boolean titleIsPresent = WaitUtils.waitUntilCondition(title::isPresent, true, 10);
-//        VTFAssert.assertThat(String.format("Page title is present '%s'", pageTitle), titleIsPresent);
+    @And("user complete {string} request")
+    public void userCompleteRequest(String isPositive) {
+        sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
+
+        if (Boolean.valueOf(isPositive)) {
+            sp.supportRequest().complete();
+        } else {
+            sp.supportRequest().completeNegative();
+        }
     }
 
+    // FIXME: 2/7/2020 move from step defn to some class utils
     private Boolean waitForMessage(Supplier<List<YandexElement>> webElements, String msg, int secondsTimeout) {
         Supplier<Boolean> messageIsPresent = () -> {
             for (WebElement webElem : webElements.get()) {
@@ -75,17 +78,6 @@ public class StepDefinitions {
             return false;
         };
         return WaitUtils.waitUntilCondition(messageIsPresent, true, secondsTimeout);
-    }
-
-    @And("user complete {string} request")
-    public void userCompleteRequest(String isPositive) {
-        sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
-
-        if (Boolean.valueOf(isPositive)) {
-            sp.supportRequest().complete();
-        } else {
-            sp.supportRequest().completeNegative();
-        }
     }
 
 }

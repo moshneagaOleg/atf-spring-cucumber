@@ -27,6 +27,8 @@ public class YandexTextBlock extends TextBlock {
         return resolveLocator(null, args);
     }
 
+
+    // FIXME: 2/7/2020 make single parent Element with all methods and use it for all child classes
     private <T extends YandexTextBlock> T resolveLocator(Class<T> clazz, String... args) {
         try {
             Object proxyOrigin = FieldUtils.readField(getWrappedElement(), "h", true);
