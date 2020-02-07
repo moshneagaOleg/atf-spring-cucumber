@@ -1,13 +1,17 @@
 package core.page;
 
 import core.element.YandexElement;
+import core.element.YandexTextBlock;
 import core.util.WaitUtils;
 import lombok.SneakyThrows;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import ru.yandex.qatools.htmlelements.annotations.Name;
+import ru.yandex.qatools.htmlelements.annotations.Timeout;
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementDecorator;
 import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementLocatorFactory;
 
@@ -18,6 +22,11 @@ public abstract class AbstractPage implements Page {
     protected WebDriverWait wait;
     protected String url;
     protected String name;
+
+    @Name("Generic Page Title")
+    @Timeout(30)
+    @FindBy(xpath = "//*[normalize-space()='%s")
+    public YandexTextBlock gnrcPageTitle;
 
     public AbstractPage(WebDriver driver, String url, String name) {
         this.driver = driver;

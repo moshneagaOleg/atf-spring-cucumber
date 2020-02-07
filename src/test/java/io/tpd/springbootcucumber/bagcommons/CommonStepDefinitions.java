@@ -8,6 +8,7 @@ import core.page.AbstractPage;
 import core.factory.PageScanner;
 import core.util.WaitUtils;
 import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.tpd.springbootcucumber.Config;
 import io.tpd.springbootcucumber.PageKeys;
@@ -58,4 +59,9 @@ public class CommonStepDefinitions {
         }
     }
 
+    @Then("user verify page title from {string} page")
+    public void userVerifyPageTitleFromPagePage(String pageName) {
+        AbstractPage page = new PageCreator(webDriver, config.getBaseUrl()).getPage(pageName);
+        page.validatePageTitle();
+    }
 }

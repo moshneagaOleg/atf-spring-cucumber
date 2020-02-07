@@ -1,13 +1,15 @@
 package pageObject.wgu.helpCenter;
 
 import core.annotations.PageAccessor;
+import core.assertation.VTFAssert;
+import core.util.WaitUtils;
 import org.openqa.selenium.WebDriver;
-import pageObject.abstractPageObject.AbstractSupportRequest;
+import pageObject.abstractPageObject.helpCenter.AbstractSupportRequest;
 import ru.yandex.qatools.htmlelements.annotations.Timeout;
 
 @Timeout(30)
 @PageAccessor(name = "Support Requests", url = "help-center/support-request")
-public final class SupportRequest extends AbstractSupportRequest {
+public class SupportRequest extends AbstractSupportRequest {
 
     public SupportRequest(WebDriver driver) {
         super(driver);
@@ -19,7 +21,9 @@ public final class SupportRequest extends AbstractSupportRequest {
 
     @Override
     public void validatePageTitle() {
-
+        VTFAssert.assertThat("Validate page title",
+                WaitUtils.waitUntilCondition(() -> gnrcPageTitle.resolveLocator("Help Center | Support Requests").isDisplayed(),
+                        true, 10));
     }
 
     @Override

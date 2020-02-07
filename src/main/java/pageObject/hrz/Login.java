@@ -11,14 +11,11 @@ import ru.yandex.qatools.htmlelements.annotations.Timeout;
 
 @Timeout(30)
 @PageAccessor(name = "Login", url = "login")
-public final class Login extends AbstractLogin {
+public class Login extends AbstractLogin {
 
     public Header header;
-
     public MainMenuAuth mainMenuAuth;
-
     public LoginForm loginForm;
-
     public Footer footer;
 
     public Login(WebDriver driver) {
@@ -27,6 +24,11 @@ public final class Login extends AbstractLogin {
 
     public Login(WebDriver driver, String url, String name) {
         super(driver, url, name);
+    }
+
+    @Override
+    public void validatePageTitle() {
+
     }
 
 }

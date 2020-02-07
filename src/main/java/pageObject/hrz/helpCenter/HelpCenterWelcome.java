@@ -1,13 +1,15 @@
-package pageObject.hrz;
+package pageObject.hrz.helpCenter;
 
 import core.annotations.PageAccessor;
-import core.page.AbstractPage;
+import core.assertation.VTFAssert;
+import core.util.WaitUtils;
 import org.openqa.selenium.WebDriver;
+import pageObject.abstractPageObject.helpCenter.AbstractHelpCenterWelcome;
 import ru.yandex.qatools.htmlelements.annotations.Timeout;
 
 @Timeout(30)
 @PageAccessor(name = "Help Center Welcome", url = "help-center")
-public final class HelpCenterWelcome extends AbstractPage {
+public class HelpCenterWelcome extends AbstractHelpCenterWelcome {
 
 //    @Name("Page Title")
 //    @Timeout(30)
@@ -76,5 +78,11 @@ public final class HelpCenterWelcome extends AbstractPage {
         super(driver, url, name);
     }
 
+    @Override
+    public void validatePageTitle() {
+        VTFAssert.assertThat("Validate page title",
+                WaitUtils.waitUntilCondition(() -> gnrcPageTitle.resolveLocator("Help Center | Welcome").isDisplayed(),
+                        true, 10));
+    }
 }
 

@@ -14,4 +14,6 @@ public interface Page {
 
     boolean isReady();
 
+    void validatePageTitle();
+
 }

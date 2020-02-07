@@ -1,14 +1,15 @@
 package pageObject.hrz.helpCenter;
 
 import core.annotations.PageAccessor;
-import core.page.AbstractPage;
+import core.assertation.VTFAssert;
+import core.util.WaitUtils;
 import org.openqa.selenium.WebDriver;
+import pageObject.abstractPageObject.helpCenter.AbstractProctoring;
 import ru.yandex.qatools.htmlelements.annotations.Timeout;
 
 @Timeout(30)
 @PageAccessor(name = "Help Center Proctoring", url = "help-center/proctoring")
-public final class Proctoring extends AbstractPage {
-
+public class Proctoring extends AbstractProctoring {
 
     public Proctoring(WebDriver driver) {
         super(driver);
@@ -18,4 +19,10 @@ public final class Proctoring extends AbstractPage {
         super(driver, url, name);
     }
 
+    @Override
+    public void validatePageTitle() {
+        VTFAssert.assertThat("Validate page title",
+                WaitUtils.waitUntilCondition(() -> gnrcPageTitle.resolveLocator("Help Center | Proctoring").isDisplayed(),
+                        true, 10));
+    }
 }

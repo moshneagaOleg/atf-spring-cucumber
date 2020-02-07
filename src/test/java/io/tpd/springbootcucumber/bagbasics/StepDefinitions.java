@@ -1,6 +1,5 @@
 package io.tpd.springbootcucumber.bagbasics;
 
-import core.app.WGU;
 import core.app.abstractApps.AbstractStudentPortal;
 import core.assertation.VTFAssert;
 import core.element.YandexElement;
@@ -12,7 +11,6 @@ import io.tpd.springbootcucumber.Config;
 import io.tpd.springbootcucumber.PageKeys;
 import io.tpd.springbootcucumber.ScenarioContext;
 import io.tpd.springbootcucumber.SpringBootCucumberApplication;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -92,17 +90,12 @@ public class StepDefinitions {
 
     @And("user clicks submit")
     public void userClicksSubmit() {
-        WGU wgu = (WGU) scenarioContext.getData(PageKeys.WGU_INIT);
-        System.out.println();
-        wgu.adminLoginPage().loginForm.emailInp.sendKeys(RandomStringUtils.randomAlphanumeric(8));
-        wgu.adminLoginPage().loginForm.passwordInp.sendKeys(RandomStringUtils.randomAlphanumeric(8));
-        wgu.adminLoginPage().loginForm.signInBtn.click();
-        System.out.println("Clicked on button");
+//        WGU wgu = (WGU) scenarioContext.getData(PageKeys.WGU_INIT);
+//        System.out.println();
+//        wgu.adminLoginPage().loginForm.emailInp.sendKeys(RandomStringUtils.randomAlphanumeric(8));
+//        wgu.adminLoginPage().loginForm.passwordInp.sendKeys(RandomStringUtils.randomAlphanumeric(8));
+//        wgu.adminLoginPage().loginForm.signInBtn.click();
+//        System.out.println("Clicked on button");
     }
 
-    @And("user blablabla")
-    public void userBlablabla() {
-        WGU wgu = (WGU) scenarioContext.getData(PageKeys.WGU_INIT);
-        wgu.mainPage().footer.gnrcLink.resolveLocator("Resources", "Help Center").click();
-    }
 }

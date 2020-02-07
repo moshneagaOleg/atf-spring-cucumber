@@ -1,14 +1,15 @@
 package pageObject.hrz.helpCenter;
 
 import core.annotations.PageAccessor;
-import core.page.AbstractPage;
+import core.assertation.VTFAssert;
+import core.util.WaitUtils;
 import org.openqa.selenium.WebDriver;
+import pageObject.abstractPageObject.helpCenter.AbstractSystemCheck;
 import ru.yandex.qatools.htmlelements.annotations.Timeout;
 
 @Timeout(30)
 @PageAccessor(name = "System Check", url = "help-center/system-check")
-public final class SystemCheck extends AbstractPage {
-
+public class SystemCheck extends AbstractSystemCheck {
 
     public SystemCheck(WebDriver driver) {
         super(driver);
@@ -18,4 +19,10 @@ public final class SystemCheck extends AbstractPage {
         super(driver, url, name);
     }
 
+    @Override
+    public void validatePageTitle() {
+        VTFAssert.assertThat("Validate page title",
+                WaitUtils.waitUntilCondition(() -> gnrcPageTitle.resolveLocator("Help Center | System Check").isDisplayed(),
+                        true, 10));
+    }
 }

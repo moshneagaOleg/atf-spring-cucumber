@@ -2,17 +2,27 @@ package core.app;
 
 import core.app.abstractApps.AbstractStudentPortal;
 import org.openqa.selenium.WebDriver;
-import pageObject.csu.*;
-import pageObject.csu.helpCenter.SupportRequest;
+import pageObject.csu.Dashboard;
+import pageObject.csu.Home;
+import pageObject.csu.Login;
+import pageObject.csu.helpCenter.*;
 
 public class CSU extends AbstractStudentPortal {
 
-    private MainMenuAuth mainMenuAuth = new MainMenuAuth(driver);
-    private HelpCenterWelcome helpCenterWelcome = new HelpCenterWelcome(driver);
+    private Home home = new Home(driver);
     private Login login = new Login(driver);
     private Dashboard dashboard = new Dashboard(driver);
-    private MainPage mainPage = new MainPage(driver);
+
     private SupportRequest supportRequest = new SupportRequest(driver);
+    private HelpCenterWelcome helpCenterWelcome = new HelpCenterWelcome(driver);
+    private Academics academics = new Academics(driver);
+    private BillingAccountManagement billingAccountManagement = new BillingAccountManagement(driver);
+    private CreditTransfer creditTransfer = new CreditTransfer(driver);
+    private ETextBook eTextBook = new ETextBook(driver);
+    private Proctoring proctoring = new Proctoring(driver);
+    private Tutoring tutoring = new Tutoring(driver);
+    private StudentPolicies studentPolicies = new StudentPolicies(driver);
+    private SystemCheck systemCheck = new SystemCheck(driver);
 
     public CSU(WebDriver driver) {
         super(driver);
@@ -22,19 +32,28 @@ public class CSU extends AbstractStudentPortal {
         return new CSU(driver);
     }
 
-    public MainMenuAuth mainMenuAuth() { return mainMenuAuth.initOnDemand(); }
-    public HelpCenterWelcome helpCenterWelcome() { return helpCenterWelcome.initOnDemand(); }
+    @Override
+    public Home home() { return home.initOnDemand(); }
+    public Login login() { return login.initOnDemand(); }
     public Dashboard dashboard() {
         return dashboard.initOnDemand();
     }
-    public MainPage mainPage() {
-        return mainPage.initOnDemand();
-    }
 
-    @Override
     public SupportRequest supportRequest() {
         return supportRequest.initOnDemand();
     }
-    public Login login() { return login.initOnDemand(); }
+    public HelpCenterWelcome helpCenterWelcome() { return helpCenterWelcome.initOnDemand(); }
+    public Academics academics() { return academics.initOnDemand(); }
+    public BillingAccountManagement billingAccountManagement() { return billingAccountManagement.initOnDemand(); }
+    public CreditTransfer creditTransfer() { return creditTransfer.initOnDemand(); }
+    public ETextBook eTextBook() { return eTextBook.initOnDemand(); }
+    public Proctoring proctoring() { return proctoring.initOnDemand(); }
+    public Tutoring tutoring() { return tutoring.initOnDemand(); }
+    public StudentPolicies studentPolicies() { return studentPolicies.initOnDemand(); }
+    public SystemCheck systemCheck() { return systemCheck.initOnDemand(); }
 
+    @Override
+    public void validatePageTitle() {
+
+    }
 }
