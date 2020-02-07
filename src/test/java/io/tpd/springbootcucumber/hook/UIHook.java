@@ -76,9 +76,6 @@ public class UIHook {
                 scenarioContext.save(PageKeys.STUDENT_PORTAL_INIT, studentPortal = HRZ.initApp(webDriver));
                 scenarioContext.save(PageKeys.HRZ_INIT, HRZ.initApp(webDriver));
         }
-
-
-//        scenarioContext.save(PageKeys.STUDENT_PORTAL_INIT, AbstractStudentPortal(webDriver));
     }
 
     @After

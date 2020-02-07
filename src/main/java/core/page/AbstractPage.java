@@ -25,7 +25,7 @@ public abstract class AbstractPage implements Page {
 
     @Name("Generic Page Title")
     @Timeout(30)
-    @FindBy(xpath = "//*[normalize-space()='%s")
+    @FindBy(xpath = "//*[normalize-space()='%s']")
     public YandexTextBlock gnrcPageTitle;
 
     public AbstractPage(WebDriver driver, String url, String name) {

@@ -26,8 +26,8 @@ public class PageScanner {
     @SneakyThrows
     public static Object getElementByName(WebDriver driver, String elementName, String pageName) {
         Reflections reflections = new Reflections(String.format("pageObject.%s", Config.TENANT));
-        Set<Class<? extends AbstractPage>> classes = reflections.getSubTypesOf(AbstractPage.class);
-        for (Class<? extends AbstractPage> pageObject : classes) {
+        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(PageAccessor.class);
+        for (Class<?> pageObject : classes) {
             if (pageObject.isAnnotationPresent(PageAccessor.class))
                 if (StringUtils.equals(pageObject.getAnnotation(PageAccessor.class).name(), pageName))
                     for (Field field : pageObject.getDeclaredFields()) {

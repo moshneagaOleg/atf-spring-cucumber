@@ -9,7 +9,7 @@ Feature: Help Center links
 
     Examples:
       | Page                       |
-      | Support Requests           |
+#      | Support Requests           |
       | Academics                  |
       | Help Center Proctoring     |
       | eTextbooks                 |

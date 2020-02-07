@@ -88,14 +88,4 @@ public class StepDefinitions {
         }
     }
 
-    @And("user clicks submit")
-    public void userClicksSubmit() {
-//        WGU wgu = (WGU) scenarioContext.getData(PageKeys.WGU_INIT);
-//        System.out.println();
-//        wgu.adminLoginPage().loginForm.emailInp.sendKeys(RandomStringUtils.randomAlphanumeric(8));
-//        wgu.adminLoginPage().loginForm.passwordInp.sendKeys(RandomStringUtils.randomAlphanumeric(8));
-//        wgu.adminLoginPage().loginForm.signInBtn.click();
-//        System.out.println("Clicked on button");
-    }
-
 }
