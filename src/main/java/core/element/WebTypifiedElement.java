@@ -7,8 +7,6 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Assert;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
@@ -56,8 +54,9 @@ public class WebTypifiedElement extends TypifiedElement {
 
     @Override
     public void click() {
-        scrollTo();
-        new WebDriverWait(getDriver(), 15).until(ExpectedConditions.elementToBeClickable(this));
+        // FIXME: 2/8/2020 add wait for click
+//        scrollTo();
+//        new WebDriverWait(getDriver(), 15).until(ExpectedConditions.elementToBeClickable(this));
         execute(() -> this.getWrappedElement().click());
         logger.info("Clicked on '{}'", getName());
     }
@@ -235,9 +234,9 @@ public class WebTypifiedElement extends TypifiedElement {
         return executeJavaScript(getDriver(), IS_ELEMENT_VISIBLE, this);
     }
 
-    public void scrollTo() {
-        executeJavaScript(getDriver(), SCROLL_TO_ELEMENT_INTO_MIDDLE, this.getWrappedElement());
-    }
+//    public void scrollTo() {
+//        executeJavaScript(getDriver(), SCROLL_TO_ELEMENT_INTO_MIDDLE, this.getWrappedElement());
+//    }
 
     public void scrollTo(WebElement element) {
         executeJavaScript(getDriver(), SCROLL_TO_ELEMENT_INTO_MIDDLE, element);
