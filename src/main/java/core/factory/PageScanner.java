@@ -1,6 +1,7 @@
 package core.factory;
 
 import core.annotations.PageAccessor;
+import core.element.WebTypifiedElement;
 import core.page.AbstractPage;
 import io.tpd.springbootcucumber.Config;
 import lombok.SneakyThrows;
@@ -21,10 +22,10 @@ public class PageScanner {
      * @param driver      WebDriver
      * @param elementName String Ex: close button, it annotated in page object
      * @param pageName    String Ex: Home, it annotated above page object
-     * @return YandexElement
+     * @return WebTypifiedElement
      */
     @SneakyThrows
-    public static Object getElementByName(WebDriver driver, String elementName, String pageName) {
+    public static WebTypifiedElement getElementByName(WebDriver driver, String elementName, String pageName) {
         Reflections reflections = new Reflections(String.format("pageObject.%s", Config.TENANT));
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(PageAccessor.class);
         for (Class<?> pageObject : classes) {
@@ -35,14 +36,14 @@ public class PageScanner {
                         if (field.isAnnotationPresent(Name.class)) {
                             if (StringUtils.equalsIgnoreCase(field.getAnnotation(Name.class).value(), elementName)) {
                                 Object page = HtmlElementLoader.createPageObject(pageObject, driver);
-                                return field.get(page);
+                                return (WebTypifiedElement) field.get(page);
                             }
                         } else if (!field.isAnnotationPresent(Name.class)) {
                             for (Field componentField : field.getType().getFields()) {
                                 componentField.setAccessible(true);
                                 if (componentField.isAnnotationPresent(Name.class))
                                     if (StringUtils.equalsIgnoreCase(componentField.getAnnotation(Name.class).value(), elementName)) {
-                                        return componentField.get(HtmlElementLoader.create(field.getType(), driver));
+                                        return (WebTypifiedElement) componentField.get(HtmlElementLoader.create(field.getType(), driver));
                                     }
                             }
                         }

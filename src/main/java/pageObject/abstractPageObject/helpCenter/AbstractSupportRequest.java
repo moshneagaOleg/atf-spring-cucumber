@@ -8,22 +8,22 @@ public abstract class AbstractSupportRequest extends AbstractPage {
 //    @Name("First Name")
 //    @Timeout(30)
 //    @FindBy(xpath = "//label[text()='First Name *']/following-sibling::div//input[@name='first-name']")
-//    public YandexTextInput firstNameInp;
+//    public WebTextInput firstNameInp;
 //
 //    @Name("Last Name")
 //    @Timeout(30)
 //    @FindBy(xpath = "//label[text()='Last Name *']/following-sibling::div//input[@name='last-name']")
-//    public YandexTextInput lastNameInp;
+//    public WebTextInput lastNameInp;
 //
 //    @Name("Request Details")
 //    @Timeout(30)
 //    @FindBy(xpath = "//label[text()='Request Details *']/following-sibling::div//textarea[@name='request-details']")
-//    public YandexTextInput requestDetailsInp;
+//    public WebTextInput requestDetailsInp;
 //
 //    @Name("Submit")
 //    @Timeout(30)
 //    @FindBy(xpath = "//button[normalize-space()='Submit']")
-//    public YandexButton submitBtn;
+//    public WebButton submitBtn;
 
     public AbstractSupportRequest(WebDriver driver) {
         super(driver);

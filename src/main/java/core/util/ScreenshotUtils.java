@@ -1,6 +1,6 @@
 package core.util;
 
-import core.element.YandexElement;
+import core.element.WebTypifiedElement;
 import lombok.AllArgsConstructor;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -13,7 +13,7 @@ public abstract class ScreenshotUtils {
 
     private static Logger logger = LoggerFactory.getLogger(WaitUtils.class.getSimpleName());
 
-    public static void highlightElement(WebDriver driver, YandexElement element) {
+    public static void highlightElement(WebDriver driver, WebTypifiedElement element) {
         try {
             if (element.isPresent()) {
                 executeJavaScript(driver, "arguments[0].style.border='3px solid red'", element);
@@ -23,7 +23,7 @@ public abstract class ScreenshotUtils {
         }
     }
 
-    public static void unhighlightElement(WebDriver driver, YandexElement element) {
+    public static void unhighlightElement(WebDriver driver, WebTypifiedElement element) {
         try {
             if (element.isPresent()) {
                 executeJavaScript(driver, "arguments[0].style.removeProperty('border');", element);

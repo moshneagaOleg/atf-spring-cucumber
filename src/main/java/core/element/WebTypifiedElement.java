@@ -7,16 +7,12 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Assert;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.yandex.qatools.htmlelements.element.HtmlElement;
+import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -28,7 +24,7 @@ import static core.util.ScreenshotUtils.unhighlightElement;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 
-public class YandexElement extends HtmlElement {
+public class WebTypifiedElement extends TypifiedElement {
 
     private static final String SCROLL_TO_ELEMENT_INTO_MIDDLE = "var viewPortHeight = " +
             "Math.max(document.documentElement.clientHeight, window.innerHeight || 0);" +
@@ -47,50 +43,37 @@ public class YandexElement extends HtmlElement {
 
     private String xPath;
     private static final int ATTEMPTS_NUMBER = 3;
-    private Logger logger = LoggerFactory.getLogger(YandexElement.class.getSimpleName());
+    private Logger logger = LoggerFactory.getLogger(WebTypifiedElement.class.getSimpleName());
 
-    // FIXME: 2/7/2020 remove
-//    /**
-//     * Specifies wrapped {@link WebElement}.
-//     *
-//     * @param wrappedElement {@code WebElement} to wrap.
-//     */
-//    protected YandexElement(WebElement wrappedElement) {
-//        super(wrappedElement);
-//    }
+    public WebTypifiedElement(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
 
-    // FIXME: 2/2/2020 uncomment constructor
-//    public YandexElement(WebElement wrappedElement) {
-//        super(wrappedElement);
-//    }
-
-//    public YandexElement (WebDriver driver) {
-//        PageFactory.initElements(new HtmlElementDecorator(new HtmlElementLocatorFactory(driver)), this);
-//    }
-
-//    public YandexElement(WebElement wrappedElement, String name) {
-//        super(wrappedElement);
-//        setName(name);
-//    }
+    public WebTypifiedElement(WebElement wrappedElement, String name) {
+        super(wrappedElement);
+        setName(name);
+    }
 
     @Override
     public void click() {
         scrollTo();
-        waitForClickable(this, 10);
+        new WebDriverWait(getDriver(), 15).until(ExpectedConditions.elementToBeClickable(this));
         execute(() -> this.getWrappedElement().click());
         logger.info("Clicked on '{}'", getName());
     }
 
+    // FIXME: 2/8/2020 uncomment
     protected void execute(Runnable action) {
-        highlightElement(getDriver(), this);
+//        highlightElement(getDriver(), this);
         executeWithAttempts(action);
-        unhighlightElement(getDriver(), this);
+//        unhighlightElement(getDriver(), this);
     }
 
+    // FIXME: 2/8/2020 uncomment
     protected <T> T execute(Supplier<T> action) {
-        highlightElement(getDriver(), this);
+//        highlightElement(getDriver(), this);
         T result = executeWithAttempts(action);
-        unhighlightElement(getDriver(), this);
+//        unhighlightElement(getDriver(), this);
         return result;
     }
 
@@ -146,7 +129,7 @@ public class YandexElement extends HtmlElement {
                 Pattern.matches(regexp, this.getText()));
     }
 
-    public void checkIfEquals(Function<YandexElement, String> function, String value) {
+    public void checkIfEquals(Function<WebTypifiedElement, String> function, String value) {
         VTFAssert.assertThat(String.format("Validate '%s' text if equals", getName()),
                 function.apply(this).trim(), is(value));
     }
@@ -310,7 +293,7 @@ public class YandexElement extends HtmlElement {
         return null;
     }
 
-    public <T extends YandexElement> T setLocator(String newXpath) {
+    public <T extends WebTypifiedElement> T setLocator(String newXpath) {
         try {
             Object proxyOrigin = FieldUtils.readField(getWrappedElement(), "h", true);
             Object locator = FieldUtils.readField(proxyOrigin, "locator", true);
@@ -323,11 +306,11 @@ public class YandexElement extends HtmlElement {
         }
     }
 
-    public <T extends YandexElement> T resolveLocator(String... args) {
+    public <T extends WebTypifiedElement> T resolveLocator(String... args) {
         return resolveLocator(null, args);
     }
 
-    private <T extends YandexElement> T resolveLocator(Class<T> clazz, String... args) {
+    private <T extends WebTypifiedElement> T resolveLocator(Class<T> clazz, String... args) {
         try {
             Object proxyOrigin = FieldUtils.readField(getWrappedElement(), "h", true);
             Object locator = FieldUtils.readField(proxyOrigin, "locator", true);
@@ -344,32 +327,6 @@ public class YandexElement extends HtmlElement {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    // FIXME: 2/4/2020 optimization
-    private void waitUntilPageLoaded(int seconds) {
-        ExpectedCondition<Boolean> expectation = driver -> executeJavaScript(getDriver(), "return document.readyState")
-                .toString().equals("complete");
-        try {
-            WebDriverWait wait = new WebDriverWait(Objects.requireNonNull(getDriver()), seconds);
-            wait.pollingEvery(Duration.of(1, ChronoUnit.SECONDS)).until(expectation);
-        } catch (Exception error) {
-            logger.warn("Timeout waiting for Page Load Request to Complete.", error);
-        }
-    }
-
-    // FIXME: 2/4/2020 remove
-    public <T extends YandexElement> T waitFor(T element, int seconds) {
-        new WebDriverWait(getDriver(), seconds).until(ExpectedConditions.visibilityOf(element));
-        element.isDisplayedAssertion();
-        return element;
-    }
-
-    // FIXME: 2/4/2020 remove
-    public <T extends YandexElement> T waitForClickable(T element, int seconds) {
-        new WebDriverWait(getDriver(), seconds).until(ExpectedConditions.elementToBeClickable(element));
-        element.isDisplayedAssertion();
-        return element;
     }
 
 }

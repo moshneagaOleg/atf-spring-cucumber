@@ -1,6 +1,6 @@
 package pageObject.compoment;
 
-import core.element.YandexLink;
+import core.element.WebLink;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.annotations.Timeout;
@@ -13,6 +13,6 @@ public class Header extends HtmlElement {
     @Name("Generic Link")
     @Timeout(30)
     @FindBy(xpath = "//a[normalize-space()='%s']")
-    public YandexLink gnrcLink;
+    public WebLink gnrcLink;
 
 }

@@ -2,7 +2,7 @@ package io.tpd.springbootcucumber.bagbasics;
 
 import core.app.abstractApps.AbstractStudentPortal;
 import core.assertation.VTFAssert;
-import core.element.YandexElement;
+import core.element.WebTypifiedElement;
 import core.util.WaitUtils;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
@@ -68,7 +68,7 @@ public class StepDefinitions {
     }
 
     // FIXME: 2/7/2020 move from step defn to some class utils
-    private Boolean waitForMessage(Supplier<List<YandexElement>> webElements, String msg, int secondsTimeout) {
+    private Boolean waitForMessage(Supplier<List<WebTypifiedElement>> webElements, String msg, int secondsTimeout) {
         Supplier<Boolean> messageIsPresent = () -> {
             for (WebElement webElem : webElements.get()) {
                 if (StringUtils.contains(webElem.getText(), msg)) {

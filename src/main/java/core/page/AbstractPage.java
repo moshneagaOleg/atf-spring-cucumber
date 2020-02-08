@@ -1,7 +1,7 @@
 package core.page;
 
-import core.element.YandexElement;
-import core.element.YandexTextBlock;
+import core.element.WebTypifiedElement;
+import core.element.WebTextBlock;
 import core.util.WaitUtils;
 import lombok.SneakyThrows;
 import org.openqa.selenium.JavascriptExecutor;
@@ -26,7 +26,7 @@ public abstract class AbstractPage implements Page {
     @Name("Generic Page Title")
     @Timeout(30)
     @FindBy(xpath = "//*[normalize-space()='%s']")
-    public YandexTextBlock gnrcPageTitle;
+    public WebTextBlock gnrcPageTitle;
 
     public AbstractPage(WebDriver driver, String url, String name) {
         this.driver = driver;
@@ -89,13 +89,13 @@ public abstract class AbstractPage implements Page {
         return (T) this;
     }
 
-    public <T extends YandexElement> T waitFor(T element, int seconds) {
+    public <T extends WebTypifiedElement> T waitFor(T element, int seconds) {
         new WebDriverWait(driver, seconds).until(ExpectedConditions.visibilityOf(element));
         element.isDisplayedAssertion();
         return element;
     }
 
-    public <T extends YandexElement> T waitForClickable(T element, int seconds) {
+    public <T extends WebTypifiedElement> T waitForClickable(T element, int seconds) {
         new WebDriverWait(driver, seconds).until(ExpectedConditions.elementToBeClickable(element));
         element.isDisplayedAssertion();
         return element;

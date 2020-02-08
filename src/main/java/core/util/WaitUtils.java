@@ -1,6 +1,6 @@
 package core.util;
 
-import core.element.YandexElement;
+import core.element.WebTypifiedElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -31,7 +31,7 @@ public abstract class WaitUtils {
         return result;
     }
 
-    public static Boolean waitUntilCondition(Function<YandexElement, Boolean> function, YandexElement webElement, boolean condition, int secondsTimeInterval) {
+    public static Boolean waitUntilCondition(Function<WebTypifiedElement, Boolean> function, WebTypifiedElement webElement, boolean condition, int secondsTimeInterval) {
         long start = System.currentTimeMillis();
         do {
             try {
@@ -52,13 +52,13 @@ public abstract class WaitUtils {
         }
     }
 
-    public static <T extends YandexElement> T waitFor(WebDriver driver, T element, int seconds) {
+    public static <T extends WebTypifiedElement> T waitFor(WebDriver driver, T element, int seconds) {
         new WebDriverWait(driver, seconds).until(ExpectedConditions.visibilityOf(element));
         element.isDisplayedAssertion();
         return element;
     }
 
-    public static <T extends YandexElement> T waitForClickable(WebDriver driver, T element, int seconds) {
+    public static <T extends WebTypifiedElement> T waitForClickable(WebDriver driver, T element, int seconds) {
         new WebDriverWait(driver, seconds).until(ExpectedConditions.elementToBeClickable(element));
         element.isDisplayedAssertion();
         return element;

@@ -1,6 +1,6 @@
 package core.app.abstractApps;
 
-import core.element.YandexElement;
+import core.element.WebTypifiedElement;
 import core.page.AbstractPage;
 import lombok.Getter;
 import org.openqa.selenium.WebDriver;
@@ -16,7 +16,7 @@ import java.util.List;
 public abstract class AbstractStudentPortal extends AbstractPage {
 
     @FindBy(xpath = "//div[contains(@class,'toasted toasted-primary success')]")
-    public List<YandexElement> successMsgs;
+    public List<WebTypifiedElement> successMsgs;
 
     @Getter
     public static String baseUrl;

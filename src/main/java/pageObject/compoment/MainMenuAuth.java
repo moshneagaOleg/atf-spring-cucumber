@@ -1,7 +1,7 @@
 package pageObject.compoment;
 
-import core.element.YandexButton;
-import core.element.YandexLink;
+import core.element.WebButton;
+import core.element.WebLink;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.annotations.Timeout;
@@ -14,12 +14,12 @@ public class MainMenuAuth extends HtmlElement {
     @Name("Photo Button")
     @Timeout(30)
     @FindBy(xpath = "//button[div[contains(@class,'photo')]]")
-    public YandexButton photoBtn;
+    public WebButton photoBtn;
 
     @Name("Generic Link")
     @Timeout(30)
     @FindBy(xpath = "//a[normalize-space()='%s']")
-    public YandexLink gnrcLink;
+    public WebLink gnrcLink;
 
     public void navigateStudentPortalAuthStudent() {
         photoBtn.click();

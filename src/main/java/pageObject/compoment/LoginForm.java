@@ -1,7 +1,7 @@
 package pageObject.compoment;
 
-import core.element.YandexButton;
-import core.element.YandexTextInput;
+import core.element.WebButton;
+import core.element.WebTextInput;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.annotations.Timeout;
@@ -14,16 +14,16 @@ public class LoginForm extends HtmlElement {
     @Name("Email Input")
     @Timeout(30)
     @FindBy(xpath = "//input[@type='email']")
-    public YandexTextInput emailInp;
+    public WebTextInput emailInp;
 
     @Name("Password Input")
     @Timeout(30)
     @FindBy(xpath = "//input[@type='password']")
-    public YandexTextInput passwordInp;
+    public WebTextInput passwordInp;
 
     @Name("Sing In")
     @Timeout(30)
     @FindBy(xpath = "//button[@type='submit']")
-    public YandexButton signInBtn;
+    public WebButton signInBtn;
 
 }
