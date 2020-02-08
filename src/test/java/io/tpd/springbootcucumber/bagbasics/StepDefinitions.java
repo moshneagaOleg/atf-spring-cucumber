@@ -12,7 +12,6 @@ import io.tpd.springbootcucumber.PageKeys;
 import io.tpd.springbootcucumber.ScenarioContext;
 import io.tpd.springbootcucumber.SpringBootCucumberApplication;
 import org.apache.commons.lang3.StringUtils;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,35 +29,31 @@ public class StepDefinitions {
     @Autowired
     private Environment environment;
 
-    // FIXME: 2/2/2020 remove
-    private WebDriver webDriver;
-
     @Autowired()
     private ScenarioContext scenarioContext;
 
-    private AbstractStudentPortal sp;
-
     @Then("user verify {string} message")
     public void userVerifyStringMessage(String message) {
+        AbstractStudentPortal sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
         VTFAssert.assertThat(String.format("Message is present '%s'", message),
                 waitForMessage(() -> sp.successMsgs, message, 15));
     }
 
     @When("user login on the page")
     public void userLoginOnThePage() {
-        webDriver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
-        sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
+        AbstractStudentPortal sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
         sp.login().login(config.getBasicUser(), config.getCommonPassword());
     }
 
     @And("user logOut")
     public void userLogOut() {
+        AbstractStudentPortal sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
         sp.login().mainMenuAuth.logout();
     }
 
     @And("user complete {string} request")
     public void userCompleteRequest(String isPositive) {
-        sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
+        AbstractStudentPortal sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
 
         if (Boolean.valueOf(isPositive)) {
             sp.supportRequest().complete();

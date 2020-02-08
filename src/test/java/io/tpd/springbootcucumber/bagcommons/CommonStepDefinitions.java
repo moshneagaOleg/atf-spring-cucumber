@@ -1,6 +1,5 @@
 package io.tpd.springbootcucumber.bagcommons;
 
-import core.app.abstractApps.AbstractStudentPortal;
 import core.assertation.VTFAssert;
 import core.element.WebTypifiedElement;
 import core.factory.PageCreator;
@@ -25,23 +24,19 @@ public class CommonStepDefinitions {
     @Autowired
     private Environment environment;
 
-    private WebDriver webDriver;
-
     @Autowired()
     private ScenarioContext scenarioContext;
 
-    private AbstractStudentPortal sp;
-
     @Given("user open page {string}")
     public void userOpenPage(String pageName) {
-        webDriver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
-        sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
+        WebDriver webDriver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
         AbstractPage page = new PageCreator(webDriver, config.getBaseUrl()).getPage(pageName);
         page.open();
     }
 
     @When("user is on the {string} page")
     public void userIsOnThePage(String pageName) {
+        WebDriver webDriver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
         AbstractPage page = new PageCreator(webDriver, config.getBaseUrl()).getPage(pageName);
         VTFAssert.assertThat(String.format("User is on the '%s' page", pageName),
                 WaitUtils.waitUntilCondition(page::isCurrentPage, true, 20));
@@ -49,12 +44,14 @@ public class CommonStepDefinitions {
 
     @When("user clicks on the {string} from {string} page")
     public void userClicksOnTheElement(String elementName, String pageName) {
+        WebDriver webDriver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
         WebTypifiedElement element = PageScanner.getElementByName(webDriver, elementName, pageName);
         element.click();
     }
 
     @Then("user verify page title from {string} page")
     public void userVerifyPageTitleFromPagePage(String pageName) {
+        WebDriver webDriver = (WebDriver) scenarioContext.getData(PageKeys.OPEN_DRIVER);
         AbstractPage page = new PageCreator(webDriver, config.getBaseUrl()).getPage(pageName);
         page.validatePageTitle();
     }
