@@ -6,6 +6,7 @@ import pageObject.abstractPageObject.AbstractHome;
 import pageObject.compoment.Footer;
 import pageObject.compoment.Header;
 import pageObject.compoment.MainMenuAuth;
+import pageObject.compoment.Navigation;
 import ru.yandex.qatools.htmlelements.annotations.Timeout;
 
 @Timeout(30)
@@ -13,6 +14,7 @@ import ru.yandex.qatools.htmlelements.annotations.Timeout;
 public class Home extends AbstractHome {
 
     public Header header;
+    public Navigation navigation;
     public MainMenuAuth mainMenuAuth;
     public Footer footer;
 
