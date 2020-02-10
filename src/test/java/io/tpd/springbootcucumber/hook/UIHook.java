@@ -1,10 +1,10 @@
 package io.tpd.springbootcucumber.hook;
 
-import io.tpd.springbootcucumber.core.app.CSU;
-import io.tpd.springbootcucumber.core.app.FTK;
-import io.tpd.springbootcucumber.core.app.HRZ;
-import io.tpd.springbootcucumber.core.app.WGU;
-import io.tpd.springbootcucumber.core.app.abstractApps.AbstractStudentPortal;
+import io.tpd.springbootcucumber.app.CSU;
+import io.tpd.springbootcucumber.app.FTK;
+import io.tpd.springbootcucumber.app.HRZ;
+import io.tpd.springbootcucumber.app.WGU;
+import io.tpd.springbootcucumber.app.abstractApps.AbstractStudentPortal;
 import io.tpd.springbootcucumber.core.driver.Browser;
 import io.tpd.springbootcucumber.core.driver.DriverFactory;
 import io.tpd.springbootcucumber.core.logger.TestLogHelper;

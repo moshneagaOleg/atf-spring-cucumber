@@ -1,6 +1,6 @@
 package io.tpd.springbootcucumber.bagbasics;
 
-import io.tpd.springbootcucumber.core.app.abstractApps.AbstractStudentPortal;
+import io.tpd.springbootcucumber.app.abstractApps.AbstractStudentPortal;
 import io.tpd.springbootcucumber.core.assertation.VTFAssert;
 import io.tpd.springbootcucumber.core.element.WebTypifiedElement;
 import io.tpd.springbootcucumber.core.util.WaitUtils;

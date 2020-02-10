@@ -1,14 +1,16 @@
-package io.tpd.springbootcucumber.core.app;
+package io.tpd.springbootcucumber.app;
 
-import io.tpd.springbootcucumber.core.app.abstractApps.AbstractStudentPortal;
+import io.tpd.springbootcucumber.app.abstractApps.AbstractStudentPortal;
 import org.openqa.selenium.WebDriver;
 import io.tpd.springbootcucumber.pageObject.abstractPageObject.enroll.AbstractCourses;
 import io.tpd.springbootcucumber.pageObject.abstractPageObject.enroll.AbstractStart;
-import io.tpd.springbootcucumber.pageObject.hrz.*;
-import io.tpd.springbootcucumber.pageObject.hrz.helpCenter.*;
-import io.tpd.springbootcucumber.pageObject.hrz.enroll.*;
+import io.tpd.springbootcucumber.pageObject.ftk.Dashboard;
+import io.tpd.springbootcucumber.pageObject.ftk.Home;
+import io.tpd.springbootcucumber.pageObject.ftk.Login;
+import io.tpd.springbootcucumber.pageObject.ftk.enroll.*;
+import io.tpd.springbootcucumber.pageObject.ftk.helpCenter.*;
 
-public class HRZ extends AbstractStudentPortal {
+public class FTK extends AbstractStudentPortal {
 
     private Home home = new Home(driver);
     private Login login = new Login(driver);
@@ -32,12 +34,13 @@ public class HRZ extends AbstractStudentPortal {
     private StudentPolicies studentPolicies = new StudentPolicies(driver);
     private SystemCheck systemCheck = new SystemCheck(driver);
 
-    public HRZ(WebDriver driver) {
+
+    public FTK(WebDriver driver) {
         super(driver);
     }
 
-    public static HRZ initApp(WebDriver driver) {
-        return new HRZ(driver);
+    public static FTK initApp(WebDriver driver) {
+        return new FTK(driver);
     }
 
     @Override

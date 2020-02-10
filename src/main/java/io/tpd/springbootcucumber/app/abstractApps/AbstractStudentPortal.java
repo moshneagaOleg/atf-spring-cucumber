@@ -1,4 +1,4 @@
-package io.tpd.springbootcucumber.core.app.abstractApps;
+package io.tpd.springbootcucumber.app.abstractApps;
 
 import io.tpd.springbootcucumber.core.element.WebTypifiedElement;
 import io.tpd.springbootcucumber.core.page.AbstractPage;

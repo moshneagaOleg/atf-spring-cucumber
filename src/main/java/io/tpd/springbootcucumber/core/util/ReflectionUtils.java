@@ -1,6 +1,6 @@
 package io.tpd.springbootcucumber.core.util;
 
-import io.tpd.springbootcucumber.core.app.abstractApps.AbstractStudentPortal;
+import io.tpd.springbootcucumber.app.abstractApps.AbstractStudentPortal;
 import lombok.NonNull;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.openqa.selenium.By;

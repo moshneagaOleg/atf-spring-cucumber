@@ -1,6 +1,6 @@
-package io.tpd.springbootcucumber.core.app;
+package io.tpd.springbootcucumber.app;
 
-import io.tpd.springbootcucumber.core.app.abstractApps.AbstractStudentPortal;
+import io.tpd.springbootcucumber.app.abstractApps.AbstractStudentPortal;
 import org.openqa.selenium.WebDriver;
 import io.tpd.springbootcucumber.pageObject.abstractPageObject.enroll.AbstractProgram;
 import io.tpd.springbootcucumber.pageObject.wgu.Dashboard;
