@@ -1,13 +1,13 @@
 package io.tpd.springbootcucumber.hook;
 
-import core.app.CSU;
-import core.app.FTK;
-import core.app.HRZ;
-import core.app.WGU;
-import core.app.abstractApps.AbstractStudentPortal;
-import core.driver.Browser;
-import core.driver.DriverFactory;
-import core.logger.TestLogHelper;
+import io.tpd.springbootcucumber.core.app.CSU;
+import io.tpd.springbootcucumber.core.app.FTK;
+import io.tpd.springbootcucumber.core.app.HRZ;
+import io.tpd.springbootcucumber.core.app.WGU;
+import io.tpd.springbootcucumber.core.app.abstractApps.AbstractStudentPortal;
+import io.tpd.springbootcucumber.core.driver.Browser;
+import io.tpd.springbootcucumber.core.driver.DriverFactory;
+import io.tpd.springbootcucumber.core.logger.TestLogHelper;
 import io.cucumber.core.api.Scenario;
 import io.cucumber.core.event.Status;
 import io.cucumber.java.After;
@@ -60,6 +60,7 @@ public class UIHook {
 
     @Before()
     public void openBrowser() {
+        DriverFactory driverFactory = new DriverFactory();
         webDriver = DriverFactory.openBrowser(Browser.get(config.getBrowser()));
         scenarioContext.save(PageKeys.OPEN_DRIVER, webDriver);
         switch (Config.TENANT) {

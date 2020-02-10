@@ -1,11 +1,11 @@
 package io.tpd.springbootcucumber.bagcommons;
 
-import core.assertation.VTFAssert;
-import core.element.WebTypifiedElement;
-import core.factory.PageCreator;
-import core.factory.PageScanner;
-import core.page.AbstractPage;
-import core.util.WaitUtils;
+import io.tpd.springbootcucumber.core.assertation.VTFAssert;
+import io.tpd.springbootcucumber.core.element.WebTypifiedElement;
+import io.tpd.springbootcucumber.core.factory.PageCreator;
+import io.tpd.springbootcucumber.core.factory.PageScanner;
+import io.tpd.springbootcucumber.core.page.AbstractPage;
+import io.tpd.springbootcucumber.core.util.WaitUtils;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
