@@ -9,7 +9,7 @@ import pageObject.compoment.MainMenuAuth;
 import ru.yandex.qatools.htmlelements.annotations.Timeout;
 
 @Timeout(30)
-@PageAccessor(name = "Start", url = "enrollment/payment")
+@PageAccessor(name = "Payment", url = "enrollment/payment")
 public class Payment extends AbstractPayment {
 
     public Header header;
