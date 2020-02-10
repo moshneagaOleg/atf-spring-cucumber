@@ -6,9 +6,8 @@ import lombok.Getter;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import pageObject.abstractPageObject.AbstractDashboard;
-import pageObject.abstractPageObject.AbstractHome;
-import pageObject.abstractPageObject.AbstractLogin;
+import pageObject.abstractPageObject.*;
+import pageObject.abstractPageObject.enroll.*;
 import pageObject.abstractPageObject.helpCenter.*;
 
 import java.util.List;
@@ -29,6 +28,15 @@ public abstract class AbstractStudentPortal extends AbstractPage {
     public abstract AbstractHome home();
     public abstract AbstractDashboard dashboard();
     public abstract AbstractLogin login();
+
+    public abstract AbstractStart start();
+    public abstract AbstractProgram program();
+    public abstract AbstractAccount account();
+    public abstract AbstractPayment payment();
+    public abstract AbstractReview review();
+    public abstract AbstractProfile profile();
+    public abstract AbstractCourses courses();
+    public abstract AbstractSuccess success();
 
     public abstract AbstractHelpCenterWelcome helpCenterWelcome();
     public abstract AbstractAcademics academics();

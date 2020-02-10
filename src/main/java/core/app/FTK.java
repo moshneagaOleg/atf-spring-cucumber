@@ -2,9 +2,12 @@ package core.app;
 
 import core.app.abstractApps.AbstractStudentPortal;
 import org.openqa.selenium.WebDriver;
+import pageObject.abstractPageObject.enroll.AbstractCourses;
+import pageObject.abstractPageObject.enroll.AbstractStart;
 import pageObject.ftk.Dashboard;
-import pageObject.ftk.Login;
 import pageObject.ftk.Home;
+import pageObject.ftk.Login;
+import pageObject.ftk.enroll.*;
 import pageObject.ftk.helpCenter.*;
 
 public class FTK extends AbstractStudentPortal {
@@ -12,6 +15,13 @@ public class FTK extends AbstractStudentPortal {
     private Home home = new Home(driver);
     private Login login = new Login(driver);
     private Dashboard dashboard = new Dashboard(driver);
+
+    private Program program = new Program(driver);
+    private Account account = new Account(driver);
+    private Payment payment = new Payment(driver);
+    private Review review = new Review(driver);
+    private Profile profile = new Profile(driver);
+    private Success success = new Success(driver);
 
     private SupportRequest supportRequest = new SupportRequest(driver);
     private HelpCenterWelcome helpCenterWelcome = new HelpCenterWelcome(driver);
@@ -37,6 +47,15 @@ public class FTK extends AbstractStudentPortal {
     public Home home() { return home.initOnDemand(); }
     public Login login() { return login.initOnDemand(); }
     public Dashboard dashboard() { return dashboard.initOnDemand(); }
+
+    public AbstractStart start() { return null; }
+    public Program program() { return program.initOnDemand(); }
+    public Account account() { return account.initOnDemand(); }
+    public Payment payment() { return payment.initOnDemand(); }
+    public Review review() { return review.initOnDemand(); }
+    public Profile profile() { return profile.initOnDemand(); }
+    public AbstractCourses courses() { return null; }
+    public Success success() { return success.initOnDemand(); }
 
     public SupportRequest supportRequest() { return supportRequest.initOnDemand(); }
     public HelpCenterWelcome helpCenterWelcome() { return helpCenterWelcome.initOnDemand(); }
