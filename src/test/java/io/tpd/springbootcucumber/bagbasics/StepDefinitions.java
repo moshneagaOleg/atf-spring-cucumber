@@ -83,4 +83,8 @@ public class StepDefinitions {
     @Then("user is verify required courses from dashboard")
     public void userIsVerifyRequiredCoursesFromDashboard() {
     }
+
+    @And("user select {string}")
+    public void userSelectPROGRAM_AREA() {
+    }
 }
