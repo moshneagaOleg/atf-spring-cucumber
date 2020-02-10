@@ -25,5 +25,6 @@ Feature: CSU Enrollment feature
 
     Examples:
       | PAYMENT_TERM | PAYMENT_METHOD |
+      | blaBla       | blaBla         |
 
 

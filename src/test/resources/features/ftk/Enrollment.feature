@@ -21,3 +21,4 @@ Feature: FTK Enrollment feature
 
     Examples:
       | SCHOOL | DEGREE |
+      | blaBla | blaBla |

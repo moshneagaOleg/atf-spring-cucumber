@@ -21,3 +21,4 @@ Feature: HRZ Enrollment feature
 
     Examples:
       | SCHOOL | DEGREE |
+      | blaBla | blaBla |

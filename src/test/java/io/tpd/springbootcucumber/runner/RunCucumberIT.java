@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
         glue = {"io.tpd.springbootcucumber.bagcommons",
                 "io.tpd.springbootcucumber.bagbasics",
                 "io.tpd.springbootcucumber.hook"},
-        tags = {"@Admin", "not @Ignore"}
+        tags = {"@Login", "not @Ignore"}
 )
 public class RunCucumberIT {
 }

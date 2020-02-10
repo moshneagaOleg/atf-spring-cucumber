@@ -26,3 +26,4 @@ Feature: WGU Enrollment feature
 
     Examples:
       | PROGRAM_AREA | PAYMENT_TERM | PAYMENT_METHOD |
+      | blaBla       | blaBla       | blaBla         |
