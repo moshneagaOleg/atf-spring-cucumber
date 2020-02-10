@@ -1,17 +1,23 @@
-# Cucumber in Spring Boot using Dependency Injection
+# BDD Automation Framework
 
-Use Cucumber Spring to manage state between steps and for scenarios.
+Stack of technologies: Java, Maven, Selenium, Junit, Cucumber, Spring Boot, Yandex Elements, YAML
 
-##Running 
-####From feature file:
-1) Run only single scenario from feature file
-2) Run all feature 
-From runner: 
-1) Set needed tags which you want to run 
-ex:
-####From console:
-1) mvn clean test -Dspring.profiles.active=wgu -Denv.name=qa -Dcucumber.options="--tags @Admin,@Login,@SupportRequest,@Smoke --tags ~@HelpCenter"
-Where :
-a)'spring.profiles.active' is wgu, csu, ftk, hrz
-b)'env.name' is qa, dev, stg
-c)'cucumber.options' is all tags (can be added ignore tag)
+## Run mode
+
+From console:
+```bash
+mvn clean test -Dspring.profiles.active=wgu -Denv.name=qa -Dcucumber.options="--tags @Admin,@Login,@SupportRequest,@Smoke --tags ~@HelpCenter"
+```
+```bash
+#Examples:
+
+#cucumber.options:
+--tags @ExampleRunTag,@ExampleRunTagSecond.... - for run
+--tags ~@ExampleIgnoreTag - for ignore
+
+#spring.profiles.active:
+select one of the existing tenants: wgu, csu, ftk, hrz
+
+#env.name:
+select one of the existing environment: qa, dev, stg, feature 
+```
