@@ -77,7 +77,7 @@ public class StepDefinitions {
 
     @And("user select {string} and {string}")
     public void userSelectSchoolAndDegree() {
-
+        AbstractStudentPortal sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
     }
 
     @Then("user is verify required courses from dashboard")

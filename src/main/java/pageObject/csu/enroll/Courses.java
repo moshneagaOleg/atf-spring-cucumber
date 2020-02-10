@@ -25,6 +25,11 @@ public class Courses extends AbstractCourses {
     }
 
     @Override
+    public void completePage() {
+
+    }
+
+    @Override
     public void validatePageTitle() {
 
     }

@@ -25,6 +25,11 @@ public class Review extends AbstractReview {
     }
 
     @Override
+    public void completePage() {
+
+    }
+
+    @Override
     public void validatePageTitle() {
 
     }

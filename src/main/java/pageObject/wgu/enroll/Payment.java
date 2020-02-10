@@ -25,6 +25,11 @@ public class Payment extends AbstractPayment {
     }
 
     @Override
+    public void completePage() {
+
+    }
+
+    @Override
     public void validatePageTitle() {
 
     }

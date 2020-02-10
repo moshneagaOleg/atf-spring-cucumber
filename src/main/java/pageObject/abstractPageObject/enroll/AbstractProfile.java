@@ -19,4 +19,6 @@ public abstract class AbstractProfile extends AbstractPage {
         super(driver, url, name);
     }
 
+    public abstract void completePage();
+
 }

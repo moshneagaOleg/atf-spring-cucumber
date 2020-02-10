@@ -25,6 +25,11 @@ public class Success extends AbstractSuccess {
     }
 
     @Override
+    public void completePage() {
+
+    }
+
+    @Override
     public void validatePageTitle() {
 
     }

@@ -25,6 +25,11 @@ public class Program extends AbstractProgram {
     }
 
     @Override
+    public void completePage() {
+
+    }
+
+    @Override
     public void validatePageTitle() {
 
     }

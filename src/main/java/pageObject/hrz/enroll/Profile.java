@@ -25,6 +25,11 @@ public class Profile extends AbstractProfile {
     }
 
     @Override
+    public void completePage() {
+
+    }
+
+    @Override
     public void validatePageTitle() {
 
     }

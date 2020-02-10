@@ -25,6 +25,11 @@ public class Account extends AbstractAccount {
     }
 
     @Override
+    public void completePage() {
+
+    }
+
+    @Override
     public void validatePageTitle() {
 
     }

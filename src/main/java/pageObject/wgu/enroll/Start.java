@@ -33,6 +33,11 @@ public class Start extends AbstractStart {
     }
 
     @Override
+    public void completePage() {
+
+    }
+
+    @Override
     public void validatePageTitle() {
 
     }

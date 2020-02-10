@@ -19,4 +19,6 @@ public abstract class AbstractSuccess extends AbstractPage {
         super(driver, url, name);
     }
 
+    public abstract void completePage();
+
 }
