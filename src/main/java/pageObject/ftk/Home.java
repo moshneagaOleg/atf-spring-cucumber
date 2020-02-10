@@ -9,7 +9,7 @@ import pageObject.compoment.MainMenuAuth;
 import ru.yandex.qatools.htmlelements.annotations.Timeout;
 
 @Timeout(30)
-@PageAccessor(name = "Main", url = "/")
+@PageAccessor(name = "Home", url = "/")
 public class Home extends AbstractHome {
 
     public Header header;

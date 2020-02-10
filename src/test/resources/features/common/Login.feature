@@ -7,4 +7,4 @@ Feature: Login feature
     And user is on the 'Dashboard' page
     And user logOut
     And user verify 'You have successfully logged out.' message
-    Then user is on the 'Main' page
+    Then user is on the 'Home' page

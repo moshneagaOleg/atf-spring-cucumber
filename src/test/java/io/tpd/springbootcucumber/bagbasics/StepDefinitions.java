@@ -75,4 +75,12 @@ public class StepDefinitions {
         return WaitUtils.waitUntilCondition(messageIsPresent, true, secondsTimeout);
     }
 
+    @And("user select {string} and {string}")
+    public void userSelectSchoolAndDegree() {
+
+    }
+
+    @Then("user is verify required courses from dashboard")
+    public void userIsVerifyRequiredCoursesFromDashboard() {
+    }
 }
