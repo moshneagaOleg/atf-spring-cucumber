@@ -60,8 +60,7 @@ public class DriverFactory {
 
     private static WebDriver instantiateDriver(@NonNull Browser browser, String... arguments) {
         if (!CI_MODE.equalsIgnoreCase(System.getProperty("runMode"))) {
-            String path = DriverFactory.class.getClassLoader().getResource(getDriverPath(browser)).getPath();
-            System.setProperty(browser.driverProperty, path);
+            System.setProperty(browser.driverProperty, "src/main/resources/" + getDriverPath(browser));
         }
         switch (browser) {
             case CHROME:
