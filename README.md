@@ -1,6 +1,7 @@
 # BDD Automation Framework
 
-Stack of technologies: Java, Maven, Selenium, Junit, Cucumber, Spring Boot, Yandex Elements, YAML
+Stack of technologies: Java, Maven, [Selenium](https://selenium.dev/documentation/en/), 
+Junit, [Cucumber](https://cucumber.io/docs/guides/), Spring Boot, Yandex Elements, YAML
 
 ## Run mode
 
@@ -21,3 +22,14 @@ select one of the existing tenants: wgu, csu, ftk, hrz
 #env.name:
 select one of the existing environment: qa, dev, stg, feature 
 ```
+
+From IDEA: 
+    a) Run single test 
+     ![Screenshot](images/singleTest.png)
+    b) Run all tests from feature file
+     ![Screenshot](images/allTests.png)
+    c) Run specific iterations
+     ![Screenshot](images/specificIteration.png)
+    d) Run specific tags from runner
+     ![Screenshot](images/FromRunner.png)
+    
