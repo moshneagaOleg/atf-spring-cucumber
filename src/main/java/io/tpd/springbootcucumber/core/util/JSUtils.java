@@ -19,8 +19,9 @@ public abstract class JSUtils {
         return (Boolean) ((JavascriptExecutor) driver).executeScript(script, elements);
     }
 
-    public static void scrollTo(WebDriver driver, WebElement element) {
+    public static WebElement scrollTo(WebDriver driver, WebElement element) {
         executeJavaScript(driver, SCROLL_TO_ELEMENT_INTO_MIDDLE, element);
+        return element;
     }
 
 }

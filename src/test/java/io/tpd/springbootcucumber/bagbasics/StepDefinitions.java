@@ -8,7 +8,6 @@ import io.tpd.springbootcucumber.ScenarioContext;
 import io.tpd.springbootcucumber.app.Goodreads;
 import io.tpd.springbootcucumber.core.element.WebButton;
 import io.tpd.springbootcucumber.core.element.WebTypifiedElement;
-import io.tpd.springbootcucumber.core.util.JSUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -22,6 +21,7 @@ import java.util.function.Supplier;
 import static io.tpd.springbootcucumber.PageKeys.GOODREADS_INIT;
 import static io.tpd.springbootcucumber.PageKeys.OPEN_DRIVER;
 import static io.tpd.springbootcucumber.core.util.DateUtils.generateRandomInt;
+import static io.tpd.springbootcucumber.core.util.JSUtils.scrollTo;
 import static io.tpd.springbootcucumber.core.util.WaitUtils.waitUntilCondition;
 
 //@SpringBootTest(classes = SpringBootCucumberApplication.class)
@@ -94,32 +94,28 @@ public class StepDefinitions {
         if (book > searchSize) {
             book = 1;
         }
+        // FIXME: 3/17/2020 need elegant solution with list
         for (int i = 0; i < book ; i++) {
                         int finalI = i;
             Supplier<Boolean> wantToReadIsCLicked = () -> {
-
                 WebElement wantToRead = goodreads.search().searchTable.getRows().get(finalI).get(finalI)
                         .findElement(By.xpath("//button[@class='wtrToRead']"));
-                JSUtils.scrollTo(webDriver, wantToRead);
-                wantToRead.click();
+                scrollTo(webDriver, wantToRead).click();
                 return true;
             };
             waitUntilCondition(wantToReadIsCLicked, true, 10);
             int finalI1 = i;
             Supplier<Boolean> dropDownIsCLicked = () -> {
-                WebElement dropDown = goodreads.search().searchTable.getRows().get(finalI1).get(2)
-                        .findElement(By.xpath("//button[@class='wtrShelfButton']"));
-                JSUtils.scrollTo(webDriver, dropDown);
-                dropDown.click();
+                WebElement dropDown = goodreads.search().searchTable.getRows().get(finalI1).get(0)
+                        .findElements(By.xpath("//button[@class='wtrShelfButton']")).get(finalI1);
+                scrollTo(webDriver, dropDown).click();
                 return true;
             };
             waitUntilCondition(dropDownIsCLicked, true, 10);
-            int finalI2 = i;
             Supplier<Boolean> readIsClicked = () -> {
                 WebElement read = goodreads.search().searchTable.getRows().get(finalI1).get(2)
                         .findElement(By.xpath("//button[normalize-space()='Read']"));
-                JSUtils.scrollTo(webDriver, read);
-                read.click();
+                scrollTo(webDriver, read).click();
                 return true;
             };
             waitUntilCondition(readIsClicked, true, 10);
