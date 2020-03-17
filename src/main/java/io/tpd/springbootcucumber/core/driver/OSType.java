@@ -24,7 +24,6 @@ public enum OSType {
             return MAC;
         } else {
             throw new Exception("Exception: Number cannot be negative");
-//            throw new RuntimeException(format("[%s] OS does not match with any of types in the [%s] enum", osName, OSType.class.getSimpleName()));
         }
     }
 

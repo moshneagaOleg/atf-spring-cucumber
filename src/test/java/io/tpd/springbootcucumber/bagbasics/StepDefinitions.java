@@ -1,26 +1,30 @@
 package io.tpd.springbootcucumber.bagbasics;
 
-import io.tpd.springbootcucumber.app.abstractApps.AbstractStudentPortal;
-import io.tpd.springbootcucumber.core.assertation.VTFAssert;
-import io.tpd.springbootcucumber.core.element.WebTypifiedElement;
-import io.tpd.springbootcucumber.core.util.WaitUtils;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
+import com.github.javafaker.Faker;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Then;
 import io.tpd.springbootcucumber.Config;
-import io.tpd.springbootcucumber.PageKeys;
 import io.tpd.springbootcucumber.ScenarioContext;
-import io.tpd.springbootcucumber.SpringBootCucumberApplication;
-import org.apache.commons.lang3.StringUtils;
+import io.tpd.springbootcucumber.app.Goodreads;
+import io.tpd.springbootcucumber.core.element.WebButton;
+import io.tpd.springbootcucumber.core.element.WebTypifiedElement;
+import io.tpd.springbootcucumber.core.util.JSUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 
-import java.util.List;
 import java.util.function.Supplier;
 
-@SpringBootTest(classes = SpringBootCucumberApplication.class)
+import static io.tpd.springbootcucumber.PageKeys.GOODREADS_INIT;
+import static io.tpd.springbootcucumber.PageKeys.OPEN_DRIVER;
+import static io.tpd.springbootcucumber.core.util.DateUtils.generateRandomInt;
+import static io.tpd.springbootcucumber.core.util.WaitUtils.waitUntilCondition;
+
+//@SpringBootTest(classes = SpringBootCucumberApplication.class)
 public class StepDefinitions {
 
     @Autowired
@@ -29,62 +33,116 @@ public class StepDefinitions {
     @Autowired
     private Environment environment;
 
-    @Autowired()
+    @Autowired
     private ScenarioContext scenarioContext;
 
-    @Then("user verify {string} message")
-    public void userVerifyStringMessage(String message) {
-        AbstractStudentPortal sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
-        VTFAssert.assertThat(String.format("Message is present '%s'", message),
-                waitForMessage(() -> sp.successMsgs, message, 15));
+    @Autowired
+    private Faker faker;
+
+    @And("user creates new account")
+    public void userCreatesNewAccount() {
+        Goodreads goodreads = (Goodreads) scenarioContext.getData(GOODREADS_INIT);
+        goodreads.home().loginForm.name.sendKeys(faker.name().fullName());
+        goodreads.home().loginForm.emailInp.sendKeys(faker.dog().name().toLowerCase() + "@gmail.com");
+        goodreads.home().loginForm.passwordInp.sendKeys(faker.dog().gender());
+        goodreads.home().loginForm.signInBtn.click();
     }
 
-    @When("user login on the page")
-    public void userLoginOnThePage() {
-        AbstractStudentPortal sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
-        sp.login().login(config.getBasicUser(), config.getCommonPassword());
+    @And("user selects favorite genres")
+    public void userSelectsFavoriteGenres() {
+        Goodreads goodreads = (Goodreads) scenarioContext.getData(GOODREADS_INIT);
+        WebButton continueButton = goodreads.rateBooks().continueButton;
+        continueButton.isNotEnabledAssertion();
+        goodreads.rateBooks().favoriteGenres.genreCheckBoxes.forEach(WebTypifiedElement::click);
+        continueButton.isEnabledAssertion();
+        continueButton.click();
     }
 
-    @And("user logOut")
-    public void userLogOut() {
-        AbstractStudentPortal sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
-        sp.login().mainMenuAuth.logout();
+    @And("user rates books that he read")
+    public void userRatesBooksThatHeRead() {
+        Goodreads goodreads = (Goodreads) scenarioContext.getData(GOODREADS_INIT);
+        goodreads.rateBooks().rateBook.books.forEach(e -> e.star.get(generateRandomInt(0, 5)).click());
     }
 
-    @And("user complete {string} request")
-    public void userCompleteRequest(String isPositive) {
-        AbstractStudentPortal sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
+    @And("user logs in with invalid credentials")
+    public void userLogsInWithInvalidCredentials() {
+        Goodreads goodreads = (Goodreads) scenarioContext.getData(GOODREADS_INIT);
+        goodreads.home().signIn.emailInp.sendKeys(RandomStringUtils.randomAlphabetic(8).toLowerCase() + "@gmail.com");
+        goodreads.home().signIn.passwordInp.sendKeys(RandomStringUtils.randomAlphabetic(8).toLowerCase());
+        goodreads.home().signIn.signInBtn.click();
+    }
 
-        if (Boolean.valueOf(isPositive)) {
-            sp.supportRequest().complete();
-        } else {
-            sp.supportRequest().completeNegative();
+    @Then("user verifies error message")
+    public void userVerifiesErrorMessage() {
+        Goodreads goodreads = (Goodreads) scenarioContext.getData(GOODREADS_INIT);
+        goodreads.singIn().errorMessage.checkIfEquals(
+                "Sorry, that email or password isn't right. You can reset your password.");
+    }
+
+    @And("user finds random books")
+    public void userFindsRandomBooks() {
+        Goodreads goodreads = (Goodreads) scenarioContext.getData(GOODREADS_INIT);
+        goodreads.home().header.searchInput.sendKeys(faker.book().genre());
+        goodreads.home().header.searchInput.sendKeys(Keys.ENTER);
+    }
+
+    @And("user marks {int} first books")
+    public void userMarksFirstBooks(int book) {
+        Goodreads goodreads = (Goodreads) scenarioContext.getData(GOODREADS_INIT);
+        WebDriver webDriver = (WebDriver) scenarioContext.getData(OPEN_DRIVER);
+        int searchSize = goodreads.search().searchTable.getRows().size();
+        if (book > searchSize) {
+            book = 1;
+        }
+        for (int i = 0; i < book ; i++) {
+                        int finalI = i;
+            Supplier<Boolean> wantToReadIsCLicked = () -> {
+
+                WebElement wantToRead = goodreads.search().searchTable.getRows().get(finalI).get(finalI)
+                        .findElement(By.xpath("//button[@class='wtrToRead']"));
+                JSUtils.scrollTo(webDriver, wantToRead);
+                wantToRead.click();
+                return true;
+            };
+            waitUntilCondition(wantToReadIsCLicked, true, 10);
+            int finalI1 = i;
+            Supplier<Boolean> dropDownIsCLicked = () -> {
+                WebElement dropDown = goodreads.search().searchTable.getRows().get(finalI1).get(2)
+                        .findElement(By.xpath("//button[@class='wtrShelfButton']"));
+                JSUtils.scrollTo(webDriver, dropDown);
+                dropDown.click();
+                return true;
+            };
+            waitUntilCondition(dropDownIsCLicked, true, 10);
+            int finalI2 = i;
+            Supplier<Boolean> readIsClicked = () -> {
+                WebElement read = goodreads.search().searchTable.getRows().get(finalI1).get(2)
+                        .findElement(By.xpath("//button[normalize-space()='Read']"));
+                JSUtils.scrollTo(webDriver, read);
+                read.click();
+                return true;
+            };
+            waitUntilCondition(readIsClicked, true, 10);
+            goodreads.search().reviewBox.yourReview.sendKeys(faker.harryPotter().quote());
+            goodreads.search().reviewBox.startedAtYear.selectRandom(0);
+            goodreads.search().reviewBox.startedAtMonth.selectRandom(0);
+            goodreads.search().reviewBox.startedAtDay.selectRandom(0);
+            goodreads.search().reviewBox.postButton.click();
         }
     }
 
-    // FIXME: 2/7/2020 move from step defn to some class utils
-    private Boolean waitForMessage(Supplier<List<WebTypifiedElement>> webElements, String msg, int secondsTimeout) {
-        Supplier<Boolean> messageIsPresent = () -> {
-            for (WebElement webElem : webElements.get()) {
-                if (StringUtils.contains(webElem.getText(), msg)) {
-                    return true;
-                }
-            }
-            return false;
-        };
-        return WaitUtils.waitUntilCondition(messageIsPresent, true, secondsTimeout);
+    @And("user logs out")
+    public void userLogsOut() {
+        Goodreads goodreads = (Goodreads) scenarioContext.getData(GOODREADS_INIT);
+        goodreads.home().header.profileMenu.click();
+        goodreads.home().header.signOut.click();
     }
 
-    @And("user select {string} and {string}")
-    public void userSelectSchoolAndDegree() {
-        AbstractStudentPortal sp = (AbstractStudentPortal) scenarioContext.getData(PageKeys.STUDENT_PORTAL_INIT);
-    }
-
-    @Then("user is verify required courses from dashboard")
-    public void userIsVerifyRequiredCoursesFromDashboard() {
-    }
-
-    @And("user select {string}")
-    public void userSelectPROGRAM_AREA() {
+    @And("user logs in with valid credentials")
+    public void userLogsInWithValidCredentials() {
+        Goodreads goodreads = (Goodreads) scenarioContext.getData(GOODREADS_INIT);
+        goodreads.home().signIn.emailInp.sendKeys("moshneagaoleg@gmail.com");
+        goodreads.home().signIn.passwordInp.sendKeys("Oleg951709");
+        goodreads.home().signIn.signInBtn.click();
     }
 }

@@ -1,32 +1,44 @@
 package io.tpd.springbootcucumber.core.element;
 
-import org.apache.commons.lang3.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ru.yandex.qatools.htmlelements.utils.HtmlElementUtils;
 
 import java.io.File;
 
-public class WebFileInput extends WebTypifiedElement {
+import static ru.yandex.qatools.htmlelements.utils.HtmlElementUtils.*;
 
-    private Logger logger = LoggerFactory.getLogger(WebFileInput.class.getSimpleName());
+@Slf4j
+public class WebFileInput extends WebTypifiedElement {
 
     public WebFileInput(WebElement wrappedElement) {
         super(wrappedElement);
     }
 
-    public void setFileToUpload(String fileName) {
-        WebElement fileInputElement = this.getNotProxiedInputElement();
-        if (HtmlElementUtils.isOnRemoteWebDriver(fileInputElement)) {
-            this.setLocalFileDetector((RemoteWebElement) fileInputElement);
+    public void setFileToUpload(final String fileName) {
+        WebElement fileInputElement = getNotProxiedInputElement();
+        if (isOnRemoteWebDriver(fileInputElement)) {
+            setLocalFileDetector((RemoteWebElement) fileInputElement);
         }
-        logger.info("Sending file: {}", fileName);
-        String filePath = this.getFilePath(fileName);
+        String filePath = getFilePath(fileName);
+        log.info("Sending file: {}", fileName);
         fileInputElement.sendKeys(filePath);
+    }
+
+    private String getFilePath(String fileName) {
+        return existsInClasspath(fileName) ? this.getPathForResource(fileName) : this.getPathForSystemFile(fileName);
+    }
+
+    private String getPathForResource(final String fileName) {
+        // FIXME: 3/16/2020 check if jenkins build or local machine and remove first slash
+        return getResourceFromClasspath(fileName).getPath();
+    }
+
+    private String getPathForSystemFile(final String fileName) {
+        File file = new File(fileName);
+        return file.getPath();
     }
 
     @Override
@@ -40,20 +52,6 @@ public class WebFileInput extends WebTypifiedElement {
 
     private void setLocalFileDetector(RemoteWebElement element) {
         element.setFileDetector(new LocalFileDetector());
-    }
-
-    private String getFilePath(String fileName) {
-        return HtmlElementUtils.existsInClasspath(fileName) ? this.getPathForResource(fileName) : this.getPathForSystemFile(fileName);
-    }
-
-    private String getPathForResource(String fileName) {
-        String path = HtmlElementUtils.getResourceFromClasspath(fileName).getPath();
-        return StringUtils.isBlank(path) ? path : path.replaceFirst("^/", "");
-    }
-
-    private String getPathForSystemFile(String fileName) {
-        File file = new File(fileName);
-        return file.getPath();
     }
 
 }

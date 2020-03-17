@@ -1,12 +1,11 @@
 package io.tpd.springbootcucumber.core.element;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Quotes;
 import org.openqa.selenium.support.ui.Select;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -14,35 +13,25 @@ import java.security.SecureRandom;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class WebSelect extends WebTypifiedElement {
-
-    private Logger logger = LoggerFactory.getLogger(WebRadio.class.getSimpleName());
 
     public WebSelect(WebElement wrappedElement) {
         super(wrappedElement);
     }
 
     public String selectRandom(int startIndex) {
-        String initValue = getFirstSelectedOption().getText().trim();
-        logger.info("Select '{}' with random option", getName());
-
+        log.info("Select '{}' with random option", getName());
         List<WebElement> options = getOptions();
-//        loggingAssert.assertTrue(options.size() > 0, "More than 0 options to select");
         SecureRandom random = new SecureRandom();
         int index = random.nextInt(options.size() - startIndex) + startIndex;
         WebElement option = options.get(index);
         String value = option.getText();
         selectByVisibleText(value);
 
-        // FIXME: 1/28/2020 value wasn't selected, please debug more deeply EN-15350
-//        if (!StringUtils.equals(initValue, value)){
-//            loggingAssert.assertEquals(getFirstSelectedOption().getText().trim(), initValue, "Value was not selected");
-//        }
-//        loggingAssert.assertEquals(getFirstSelectedOption().getText().trim(), value, "Option was selected right");
         return value;
     }
 
-    //copy from yandex
     private Select getSelect() {
         return new Select(this.getWrappedElement());
     }
@@ -54,13 +43,15 @@ public class WebSelect extends WebTypifiedElement {
 
     public void selectByVisibleTextIgnoreCase(String text) {
         // try to find the option via XPATH ...
+        String ignoreSpace = ".//option[normalize-space(translate(., "
+                + "'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')) =  ";
         List<WebElement> options = getWrappedElement().findElements(
-                By.xpath(".//option[normalize-space(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')) =  "
-                        + StringUtils.lowerCase(Quotes.escape(text)) + "]"));
+                By.xpath(ignoreSpace + StringUtils.lowerCase(Quotes.escape(text)) + "]"));
 
         for (WebElement option : options) {
             try {
-                Method setSelectedMethod = Select.class.getDeclaredMethod("setSelected", WebElement.class, boolean.class);
+                Method setSelectedMethod = Select.class.getDeclaredMethod("setSelected",
+                        WebElement.class, boolean.class);
                 setSelectedMethod.setAccessible(true);
                 Select selectInstance = this.getSelect();
                 setSelectedMethod.invoke(selectInstance, option, true);
@@ -68,7 +59,6 @@ public class WebSelect extends WebTypifiedElement {
                 e.printStackTrace();
             }
         }
-//        setSelected(option, true);
         if (!this.getSelect().isMultiple()) {
             return;
         }
@@ -126,8 +116,7 @@ public class WebSelect extends WebTypifiedElement {
         this.getSelect().deselectByVisibleText(text);
     }
 
-    // FIXME: 2/8/2020 add assertThat
     public void checkPlaceholder(String value) {
-//        VTFAssert.assertThat(String.format("Validate '%s' select placeholder/default value", getName()), this.getFirstSelectedOption().getText(), is(value));
+        // FIXME: 3/16/2020 add body
     }
 }

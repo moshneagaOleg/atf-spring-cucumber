@@ -1,14 +1,13 @@
 package io.tpd.springbootcucumber.core.page;
 
-import io.tpd.springbootcucumber.core.element.WebTypifiedElement;
 import io.tpd.springbootcucumber.core.element.WebTextBlock;
-import io.tpd.springbootcucumber.core.util.WaitUtils;
+import io.tpd.springbootcucumber.core.element.WebTypifiedElement;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.annotations.Timeout;
@@ -17,16 +16,22 @@ import ru.yandex.qatools.htmlelements.loader.decorator.HtmlElementLocatorFactory
 
 import java.util.function.Supplier;
 
+import static io.tpd.springbootcucumber.Config.BIG_WAIT_TIMEOUT;
+import static io.tpd.springbootcucumber.core.assertation.VTFAssert.assertThat;
+import static io.tpd.springbootcucumber.core.util.WaitUtils.waitUntilCondition;
+import static java.lang.String.format;
+
 public abstract class AbstractPage implements Page {
+
+    @Name("Generic Page Title")
+    @Timeout(BIG_WAIT_TIMEOUT)
+    @FindBy(xpath = "//main//*[normalize-space() ='%s']")
+    public WebTextBlock gnrcPageTitle;
+
     protected WebDriver driver;
     protected WebDriverWait wait;
     protected String url;
     protected String name;
-
-    @Name("Generic Page Title")
-    @Timeout(30)
-    @FindBy(xpath = "//*[normalize-space()='%s']")
-    public WebTextBlock gnrcPageTitle;
 
     public AbstractPage(WebDriver driver, String url, String name) {
         this.driver = driver;
@@ -41,11 +46,6 @@ public abstract class AbstractPage implements Page {
     }
 
     @Override
-    public void open() {
-        driver.navigate().to(url);
-    }
-
-    @Override
     public String getUrl() {
         return url;
     }
@@ -56,49 +56,52 @@ public abstract class AbstractPage implements Page {
     }
 
     @Override
+    public void open() {
+        driver.navigate().to(url);
+        isReady();
+        assertThat(format("[%s] page has proper url", getName()),
+                waitUntilCondition(this::isCurrentUrl, true, BIG_WAIT_TIMEOUT));
+        validatePageTitle();
+    }
+
+    @Override
     public String getTitle() {
         return driver.getTitle();
     }
 
     @Override
-    public boolean isCurrentPage() {
-        return driver.getCurrentUrl().startsWith(url);
-    }
-
-    @Override
-    public String toString() {
-        return "AbstractPage{" +
-                "url='" + url + '\'' +
-                ", name='" + name + '\'' +
-                '}';
+    public boolean isCurrentUrl() {
+        return StringUtils.equals(StringUtils.substringBefore(driver.getCurrentUrl(), "?"), url);
     }
 
     @Override
     @SneakyThrows
     public boolean isReady() {
-        Supplier<Boolean> pageIsReady = ()-> ((JavascriptExecutor) driver).executeScript("return document.readyState")
+        Supplier<Boolean> pageIsReady = () -> ((JavascriptExecutor) driver).executeScript("return document.readyState")
                 .toString().equals("complete");
-        return WaitUtils.waitUntilCondition(pageIsReady, true, 30);
+        return waitUntilCondition(pageIsReady, true, BIG_WAIT_TIMEOUT);
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractPage{"
+                + "url='" + url + '\''
+                + ", name='" + name + '\''
+                + '}';
     }
 
     public <T extends AbstractPage> T initOnDemand() {
         PageFactory.initElements(new HtmlElementDecorator(new HtmlElementLocatorFactory(driver)), this);
-        // FIXME: 2/4/2020 isReady a good way to stable test, but take more time ex: wgu.main().button get initOnDemand
         isReady();
-        wait = new WebDriverWait(driver, 30);
+        wait = new WebDriverWait(driver, BIG_WAIT_TIMEOUT);
         return (T) this;
     }
 
-    public <T extends WebTypifiedElement> T waitFor(T element, int seconds) {
-        new WebDriverWait(driver, seconds).until(ExpectedConditions.visibilityOf(element));
-        element.isDisplayedAssertion();
-        return element;
-    }
+    public abstract WebTypifiedElement getPageTitle();
 
-    public <T extends WebTypifiedElement> T waitForClickable(T element, int seconds) {
-        new WebDriverWait(driver, seconds).until(ExpectedConditions.elementToBeClickable(element));
-        element.isDisplayedAssertion();
-        return element;
+    public void validatePageTitle() {
+        assertThat("Validate page title",
+                waitUntilCondition(() -> getPageTitle().isDisplayed(), true, 30));
     }
 
 }

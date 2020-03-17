@@ -12,7 +12,17 @@ public class Header extends HtmlElement {
 
     @Name("Generic Link")
     @Timeout(30)
-    @FindBy(xpath = "//a[normalize-space()='%s']")
-    public WebLink gnrcLink;
+    @FindBy(xpath = "//input[@placeholder='Search books']")
+    public WebLink searchInput;
+
+    @Name("Generic Link")
+    @Timeout(30)
+    @FindBy(xpath = "//a[contains(@class, 'profileMenu')]")
+    public WebLink profileMenu;
+
+    @Name("Generic Link")
+    @Timeout(30)
+    @FindBy(xpath = "//div[contains(@class, 'dropdown dropdown--profileMenu')]//a[contains(text(), 'Sign out')]")
+    public WebLink signOut;
 
 }

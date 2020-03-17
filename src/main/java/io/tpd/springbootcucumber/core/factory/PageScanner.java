@@ -3,7 +3,6 @@ package io.tpd.springbootcucumber.core.factory;
 import io.tpd.springbootcucumber.core.annotations.PageAccessor;
 import io.tpd.springbootcucumber.core.element.WebTypifiedElement;
 import io.tpd.springbootcucumber.core.page.AbstractPage;
-import io.tpd.springbootcucumber.Config;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
@@ -26,7 +25,7 @@ public class PageScanner {
      */
     @SneakyThrows
     public static WebTypifiedElement getElementByName(WebDriver driver, String elementName, String pageName) {
-        Reflections reflections = new Reflections(String.format("io.tpd.springbootcucumber.pageObject.%s", Config.TENANT));
+        Reflections reflections = new Reflections("io.tpd.springbootcucumber.pageObject");
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(PageAccessor.class);
         for (Class<?> pageObject : classes) {
             if (pageObject.isAnnotationPresent(PageAccessor.class))
@@ -60,7 +59,7 @@ public class PageScanner {
      */
     @SneakyThrows
     public static Class<? extends AbstractPage> getPageByName(String pageName) {
-        Reflections reflections = new Reflections(String.format("io.tpd.springbootcucumber.pageObject.%s", Config.TENANT));
+        Reflections reflections = new Reflections("io.tpd.springbootcucumber.pageObject");
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(PageAccessor.class);
         for (Class<?> pageObject : classes) {
             if (StringUtils.equals(pageObject.getAnnotation(PageAccessor.class).name(), pageName))

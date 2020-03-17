@@ -10,10 +10,12 @@ public interface Page {
 
     String getTitle();
 
-    boolean isCurrentPage();
+    boolean isCurrentUrl();
 
     boolean isReady();
 
-    void validatePageTitle();
+    default void validatePageTitle() {
+
+    }
 
 }

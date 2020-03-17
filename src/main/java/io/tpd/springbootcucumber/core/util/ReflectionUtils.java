@@ -1,7 +1,7 @@
 package io.tpd.springbootcucumber.core.util;
 
-import io.tpd.springbootcucumber.app.abstractApps.AbstractStudentPortal;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -9,8 +9,6 @@ import org.openqa.selenium.WebElement;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -41,14 +39,10 @@ public abstract class ReflectionUtils {
         return null;
     }
 
-    public static <T> T newInstance(Class<T> type, Object... parameters) throws
-            IllegalAccessException, InvocationTargetException, InstantiationException {
-        Constructor<?> constructor = type.getDeclaredConstructors()[1];
-        Object[] objects = Arrays.stream(parameters).map(o -> {
-            if (o instanceof Class && ((Class) o).getSimpleName().equals("Component")) return null;
-            else return o;
-        }).collect(Collectors.toList()).toArray();
-        return type.cast(constructor.newInstance(objects));
+    @SneakyThrows
+    public static <T> T newInstance(Class<T> type, Object... parameters) {
+        Constructor<T> constructor = type.getConstructor(WebDriver.class, String.class, String.class);
+        return type.cast(constructor.newInstance(parameters));
     }
 
     public static List<Field> extractFieldsByPredicate(Class<?> type, Predicate<Field> predicate) {
@@ -79,29 +73,6 @@ public abstract class ReflectionUtils {
             superclass = superclass.getSuperclass();
         }
         return classes;
-    }
-
-    /**
-     * Find in studentPortal (ex: WGU.class) the method with name 'init' and like params put WebDriver.
-     * Run init method (first param the object the underlying method is invoked from) and (second is needed param in
-     * init method).
-     *
-     * @param driver WebDriver
-     * @param studentPortal WGU.class, CSU.class,
-     * @param <T> AbstractStudentPortal
-     * @return AbstractStudentPortal
-     */
-    public static <T extends AbstractStudentPortal> T initStudentPortal(@NonNull WebDriver driver, Class<T> studentPortal) {
-        try {
-            Method init = studentPortal.getMethod("init", WebDriver.class);
-            init.setAccessible(true);
-
-            return (T) init.invoke(studentPortal, driver);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
 }

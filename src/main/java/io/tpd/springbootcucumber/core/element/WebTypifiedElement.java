@@ -2,13 +2,13 @@ package io.tpd.springbootcucumber.core.element;
 
 import io.tpd.springbootcucumber.core.assertation.VTFAssert;
 import io.tpd.springbootcucumber.core.util.WaitUtils;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Assert;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 
 import java.util.concurrent.TimeUnit;
@@ -16,32 +16,32 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
+import static io.tpd.springbootcucumber.Config.SMALL_WAIT_TIMEOUT;
 import static io.tpd.springbootcucumber.core.util.JSUtils.executeJavaScript;
 import static io.tpd.springbootcucumber.core.util.ScreenshotUtils.highlightElement;
 import static io.tpd.springbootcucumber.core.util.ScreenshotUtils.unhighlightElement;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 
+@Slf4j
 public class WebTypifiedElement extends TypifiedElement {
 
-    private static final String SCROLL_TO_ELEMENT_INTO_MIDDLE = "var viewPortHeight = " +
-            "Math.max(document.documentElement.clientHeight, window.innerHeight || 0);" +
-            "var elementTop = arguments[0].getBoundingClientRect().top;" +
-            "window.scrollBy(0, elementTop-(viewPortHeight/2));";
-    private static final String IS_ELEMENT_VISIBLE = " var elem = arguments[0], " +
-            " box = elem.getBoundingClientRect(),     " +
-            " cx = box.left + box.width / 2,          " +
-            " cy = box.top + box.height / 2,          " +
-            " e = document.elementFromPoint(cx, cy);  " +
-            " for (; e; e = e.parentElement){       " +
-            "   if (e === elem)                     " +
-            "       return true;                    " +
-            " }                                     " +
-            " return false; ";
-
-    private String xPath;
+    private static final String SCROLL_TO_ELEMENT_INTO_MIDDLE = "var viewPortHeight = "
+            + "Math.max(document.documentElement.clientHeight, window.innerHeight || 0);"
+            + "var elementTop = arguments[0].getBoundingClientRect().top;"
+            + "window.scrollBy(0, elementTop-(viewPortHeight/2));";
+    private static final String IS_ELEMENT_VISIBLE = " var elem = arguments[0], "
+            + " box = elem.getBoundingClientRect(),     "
+            + " cx = box.left + box.width / 2,          "
+            + " cy = box.top + box.height / 2,          "
+            + " e = document.elementFromPoint(cx, cy);  "
+            + " for (; e; e = e.parentElement){       "
+            + "   if (e === elem)                     "
+            + "       return true;                    "
+            + " }                                     "
+            + " return false; ";
     private static final int ATTEMPTS_NUMBER = 3;
-    private Logger logger = LoggerFactory.getLogger(WebTypifiedElement.class.getSimpleName());
+    private String xPath;
 
     public WebTypifiedElement(WebElement wrappedElement) {
         super(wrappedElement);
@@ -55,10 +55,44 @@ public class WebTypifiedElement extends TypifiedElement {
     @Override
     public void click() {
         // FIXME: 2/8/2020 add wait for click
-//        scrollTo();
-//        new WebDriverWait(getDriver(), 15).until(ExpectedConditions.elementToBeClickable(this));
+        scrollTo(this);
         execute(() -> this.getWrappedElement().click());
-        logger.info("Clicked on '{}'", getName());
+        log.info("Clicked on '{}'", getName());
+    }
+
+    @Override
+    public void submit() {
+        execute(() -> this.getWrappedElement().submit());
+    }
+
+    @Override
+    public void sendKeys(CharSequence... keysToSend) {
+        execute(() -> this.getWrappedElement().sendKeys(keysToSend));
+    }
+
+    @Override
+    public void clear() {
+        execute(() -> this.getWrappedElement().clear());
+    }
+
+    @Override
+    public boolean isSelected() {
+        return execute(() -> this.getWrappedElement().isSelected());
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return execute(() -> this.getWrappedElement().isEnabled());
+    }
+
+    @Override
+    public String getText() {
+        return super.getText().trim();
+    }
+
+    @Override
+    public boolean isDisplayed() {
+        return execute(() -> this.getWrappedElement().isDisplayed());
     }
 
     // FIXME: 2/8/2020 uncomment
@@ -82,10 +116,10 @@ public class WebTypifiedElement extends TypifiedElement {
                 action.run();
                 break;
             } catch (StaleElementReferenceException | InvalidElementStateException ex) {
-                logger.error("Runnable action execution failed on attempt " + i, ex);
+                log.error("Runnable action execution failed on attempt " + i, ex);
             }
         }
-        logger.info("Action on '{}' had performed", getName());
+        log.info("Action on '{}' had performed", getName());
     }
 
     private <T> T executeWithAttempts(Supplier<T> action) {
@@ -93,19 +127,20 @@ public class WebTypifiedElement extends TypifiedElement {
             try {
                 return action.get();
             } catch (StaleElementReferenceException | InvalidElementStateException ex) {
-                logger.error("Supplier action execution failed on attempt" + i, ex);
+                log.error("Supplier action execution failed on attempt" + i, ex);
             }
         }
-        logger.info("Action on '{}' had performed", getName());
+        log.info("Action on '{}' had performed", getName());
 
         return null;
     }
 
     public void hover() {
+        final int timeout = 300;
         highlightElement(getDriver(), this);
         new Actions(getDriver()).moveToElement(getWrappedElement()).build().perform();
         unhighlightElement(getDriver(), this);
-        WaitUtils.waitForRetry(300);
+        WaitUtils.waitForRetry(timeout);
     }
 
     public void clickAndSwitchToNewWindow() {
@@ -113,7 +148,7 @@ public class WebTypifiedElement extends TypifiedElement {
         this.click();
         for (String handle : getDriver().getWindowHandles()) {
             if (!StringUtils.equals(openedHandle, handle)) {
-                logger.info("Switch to new opened window");
+                log.info("Switch to new opened window");
                 getDriver().switchTo().window(handle);
             }
         }
@@ -123,14 +158,14 @@ public class WebTypifiedElement extends TypifiedElement {
         VTFAssert.assertThat(String.format("Validate '%s' text if equals", getName()), this.getText(), is(value));
     }
 
-    public void checkIfMatches(String regexp) {
-        VTFAssert.assertThat(String.format("Validate '%s' text if matches pattern '%s'", this.getText(), regexp),
-                Pattern.matches(regexp, this.getText()));
-    }
-
     public void checkIfEquals(Function<WebTypifiedElement, String> function, String value) {
         VTFAssert.assertThat(String.format("Validate '%s' text if equals", getName()),
                 function.apply(this).trim(), is(value));
+    }
+
+    public void checkIfMatches(String regexp) {
+        VTFAssert.assertThat(String.format("Validate '%s' text if matches pattern '%s'", this.getText(), regexp),
+                Pattern.matches(regexp, this.getText()));
     }
 
     public void checkIfContains(String value) {
@@ -174,41 +209,6 @@ public class WebTypifiedElement extends TypifiedElement {
         VTFAssert.assertThat(String.format("Check element '%s' is not visible", getName()), not(isVisible()));
     }
 
-    @Override
-    public String getText() {
-        return super.getText().trim();
-    }
-
-    @Override
-    public void submit() {
-        execute(() -> this.getWrappedElement().submit());
-    }
-
-    @Override
-    public void sendKeys(CharSequence... keysToSend) {
-        execute(() -> this.getWrappedElement().sendKeys(keysToSend));
-    }
-
-    @Override
-    public void clear() {
-        execute(() -> this.getWrappedElement().clear());
-    }
-
-    @Override
-    public boolean isSelected() {
-        return execute(() -> this.getWrappedElement().isSelected());
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return execute(() -> this.getWrappedElement().isEnabled());
-    }
-
-    @Override
-    public boolean isDisplayed() {
-        return execute(() -> this.getWrappedElement().isDisplayed());
-    }
-
     /**
      * This method checks if the elements exists in DOM instantly, no time-out or recursive checking.<br>
      * This functionality is useful for negative webElement scenarios in particular, when we check element is not present.<br>
@@ -220,7 +220,7 @@ public class WebTypifiedElement extends TypifiedElement {
         WebDriver driver = getDriver();
         driver.manage().timeouts().implicitlyWait(0, TimeUnit.MILLISECONDS);
         int numberOfElements = driver.findElements(getLocator()).size();
-        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(SMALL_WAIT_TIMEOUT, TimeUnit.SECONDS);
 
         return numberOfElements >= 1;
     }
@@ -234,10 +234,6 @@ public class WebTypifiedElement extends TypifiedElement {
         return executeJavaScript(getDriver(), IS_ELEMENT_VISIBLE, this);
     }
 
-//    public void scrollTo() {
-//        executeJavaScript(getDriver(), SCROLL_TO_ELEMENT_INTO_MIDDLE, this.getWrappedElement());
-//    }
-
     public void scrollTo(WebElement element) {
         executeJavaScript(getDriver(), SCROLL_TO_ELEMENT_INTO_MIDDLE, element);
     }
@@ -245,33 +241,31 @@ public class WebTypifiedElement extends TypifiedElement {
     /**
      * @return Current webDriver
      */
+    @SneakyThrows
     public WebDriver getDriver() {
+        // TODO 11/02/2020: this method becomes messy. To be rewritten or use Browser component in future.
+        WebElement wrappedElement = getWrappedElement();
         try {
-            Object proxyOrigin = FieldUtils.readField(getWrappedElement(), "h", true);
+            Object proxyOrigin = FieldUtils.readField(wrappedElement, "h", true);
             Object locator = FieldUtils.readField(proxyOrigin, "locator", true);
             Object searchContext = FieldUtils.readField(locator, "searchContext", true);
-            Object converter = FieldUtils.readField(searchContext, "converter", true);
-            Object driver = FieldUtils.readField(converter, "driver", true);
-            if (driver instanceof WebDriver) {
-                return (WebDriver) driver;
-            }
+            Object h = FieldUtils.readField(searchContext, "h", true);
+            Object locatorInner = FieldUtils.readField(h, "locator", true);
+            Object searchContextInner = FieldUtils.readField(locatorInner, "searchContext", true);
+            Object locationContext = FieldUtils.readField(searchContextInner, "locationContext", true);
+            Object executeMethod = FieldUtils.readField(locationContext, "executeMethod", true);
+            return (WebDriver) FieldUtils.readField(executeMethod, "driver", true);
         } catch (IllegalArgumentException e) {
-            try {
-                Object browserSpecificDriver = FieldUtils.readField(getWrappedElement(), "parent", true);
-                if (browserSpecificDriver instanceof WebDriver) {
-                    return (WebDriver) browserSpecificDriver;
-                }
-            } catch (Exception e2) {
-                Assert.fail("Can't get active driver" + e2.getMessage());
-            }
-
-        } catch (Exception e3) {
-            Assert.fail("Can't get active driver" + e3.getMessage());
+            Object proxyOrigin = FieldUtils.readField(wrappedElement, "h", true);
+            Object locator = FieldUtils.readField(proxyOrigin, "locator", true);
+            Object searchContext = FieldUtils.readField(locator, "searchContext", true);
+            Object locationContext = FieldUtils.readField(searchContext, "locationContext", true);
+            Object executeMethod = FieldUtils.readField(locationContext, "executeMethod", true);
+            return (WebDriver) FieldUtils.readField(executeMethod, "driver", true);
         }
-        return null;
     }
 
-    private By.ByXPath getLocator() {
+    public By.ByXPath getLocator() {
         try {
             Object proxyOrigin = FieldUtils.readField(getWrappedElement(), "h", true);
             Object locator = FieldUtils.readField(proxyOrigin, "locator", true);
@@ -281,13 +275,14 @@ public class WebTypifiedElement extends TypifiedElement {
             }
         } catch (IllegalArgumentException ex) {
             try {
-                String xpath = FieldUtils.readField(getWrappedElement(), "foundBy", true).toString().split("xpath:")[1].trim();
+                String xpath = FieldUtils.readField(getWrappedElement(), "foundBy", true)
+                        .toString().split("xpath:")[1].trim();
                 return new By.ByXPath(xpath);
             } catch (IllegalAccessException e) {
-                logger.warn(e.toString());
+                log.warn(e.toString());
             }
         } catch (IllegalAccessException e) {
-            logger.warn(e.toString());
+            log.warn(e.toString());
         }
         return null;
     }
@@ -300,7 +295,7 @@ public class WebTypifiedElement extends TypifiedElement {
 
             FieldUtils.writeField(findBy, "xpathExpression", newXpath, true);
             return (T) this;
-        } catch (Exception e) {
+        } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -309,7 +304,7 @@ public class WebTypifiedElement extends TypifiedElement {
         return resolveLocator(null, args);
     }
 
-    private <T extends WebTypifiedElement> T resolveLocator(Class<T> clazz, String... args) {
+    public <T extends WebTypifiedElement> T resolveLocator(Class<T> clazz, String... args) {
         try {
             Object proxyOrigin = FieldUtils.readField(getWrappedElement(), "h", true);
             Object locator = FieldUtils.readField(proxyOrigin, "locator", true);

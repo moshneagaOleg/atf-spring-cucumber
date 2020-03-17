@@ -1,5 +1,6 @@
 package io.tpd.springbootcucumber.core.util;
 
+import java.security.SecureRandom;
 import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -58,6 +59,19 @@ public abstract class DateUtils {
      */
     public static Integer getMonthValue(String monthName) {
         return Month.valueOf(monthName.toUpperCase()).getValue();
+    }
+
+    /**
+     * @param min (inclusive)
+     * @param max (exclusive)
+     * @return random int value
+     */
+    public static int generateRandomInt(int min, int max) {
+        try {
+            return new SecureRandom().ints(min, max).findFirst().getAsInt();
+        } catch (IllegalArgumentException e) {
+            return 0;
+        }
     }
 
 }

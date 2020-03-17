@@ -3,33 +3,39 @@
 Stack of technologies: Java, Maven, [Selenium](https://selenium.dev/documentation/en/), 
 Junit, [Cucumber](https://cucumber.io/docs/guides/), Spring Boot, Yandex Elements, YAML
 
+## Before start
+
+1. Edit configuration - Templates - Cucumber java
+2. Input Main class: io.cucumber.core.cli.Main
+3. Glue: com.foreach.cuke io.tpd.springbootcucumber 
+4. Apply
+
 ## Run mode
 
 From console:
 ```bash
-mvn clean test -Dspring.profiles.active=wgu -Denv.name=qa -Dcucumber.options="--tags @Admin,@Login,@SupportRequest,@Smoke --tags ~@HelpCenter"
+mvn clean test -Drun.from=ci -Dspring.profiles.active=goodreads -Denv.name=qa -Dcucumber.ansi-colors.disabled=true -Dcucumber.filter.tags="(@Parallel1 or @Parallel2 or @Parallel3) and (not @Ignore)"
 ```
-```bash
 #Examples:
 
-#cucumber.options:
---tags @ExampleRunTag,@ExampleRunTagSecond.... - for run
---tags ~@ExampleIgnoreTag - for ignore
-
-#spring.profiles.active:
-select one of the existing tenants: wgu, csu, ftk, hrz
-
-#env.name:
-select one of the existing environment: qa, dev, stg, feature 
+[cucumber.filter.tags](https://cucumber.io/docs/cucumber/api/#tags):
+```bash
+--tags @Parallel1 or @Parallel2 or @Parallel3.... - for run
+--tags not @ExampleIgnoreTag - for ignore
 ```
-
-From IDEA: 
-    a) Run single test 
-     ![Screenshot](images/singleTest.png)
-    b) Run all tests from feature file
-     ![Screenshot](images/allTests.png)
-    c) Run specific iterations
-     ![Screenshot](images/specificIteration.png)
-    d) Run specific tags from runner
-     ![Screenshot](images/FromRunner.png)
-    
+spring.profiles.active:
+```bash
+select one of the existing app: goodreads, exampleApp, exampleApp2, exampleApp3
+```
+env.name:
+```bash
+select one of the existing environment: qa, dev, stg or www for production 
+for feature: -Denv.name=en-#####.feat (where ##### is number of ticket from JIRA)
+```
+browser:
+```bash
+select one of the browser: chrome, firefox, edge, safari
+```
+run.from:
+```bash
+there are two options: local, ci

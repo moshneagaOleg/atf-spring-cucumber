@@ -1,34 +1,35 @@
 package io.tpd.springbootcucumber.hook;
 
-import io.tpd.springbootcucumber.app.CSU;
-import io.tpd.springbootcucumber.app.FTK;
-import io.tpd.springbootcucumber.app.HRZ;
-import io.tpd.springbootcucumber.app.WGU;
-import io.tpd.springbootcucumber.app.abstractApps.AbstractStudentPortal;
-import io.tpd.springbootcucumber.core.driver.Browser;
-import io.tpd.springbootcucumber.core.driver.DriverFactory;
-import io.tpd.springbootcucumber.core.logger.TestLogHelper;
-import io.cucumber.core.api.Scenario;
-import io.cucumber.core.event.Status;
+
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
 import io.tpd.springbootcucumber.Config;
 import io.tpd.springbootcucumber.PageKeys;
 import io.tpd.springbootcucumber.ScenarioContext;
+import io.tpd.springbootcucumber.SpringBootCucumberApplication;
+import io.tpd.springbootcucumber.app.Goodreads;
+import io.tpd.springbootcucumber.core.driver.DriverFactory;
+import io.tpd.springbootcucumber.core.logger.TestLogHelper;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 
 import java.time.LocalTime;
-import java.util.Arrays;
 
 @Getter
+@Slf4j
+@SpringBootTest(classes = SpringBootCucumberApplication.class)
 public class UIHook {
+
+    private static final String CI_MODE = "ci";
 
     @Autowired
     private Config config;
@@ -36,10 +37,8 @@ public class UIHook {
     @Autowired
     private Environment environment;
 
-    @Autowired()
+    @Autowired
     private ScenarioContext scenarioContext;
-
-    private AbstractStudentPortal studentPortal;
 
     private Logger logger = LoggerFactory.getLogger(UIHook.class);
     private WebDriver webDriver;
@@ -47,10 +46,6 @@ public class UIHook {
     @Before(order = -5)
     public void loggerConfiguration(Scenario scenario) {
         logger.debug("Invoke before hook [order=1]");
-        Config.SCENARIO_NAME = scenario.getName();
-        Config.TENANT = Arrays.toString(environment.getActiveProfiles())
-                .replaceAll("\\[", "")
-                .replaceAll("\\]", "");
         String scenarioNameFinal = scenario.getName()
                 .replaceAll("\\s+", "-")
                 .concat("-" + LocalTime.now().toSecondOfDay());
@@ -60,30 +55,19 @@ public class UIHook {
 
     @Before()
     public void openBrowser() {
-        DriverFactory driverFactory = new DriverFactory();
-        webDriver = DriverFactory.openBrowser(Browser.get(config.getBrowser()));
-        scenarioContext.save(PageKeys.OPEN_DRIVER, webDriver);
-        switch (Config.TENANT) {
-            case "wgu":
-                scenarioContext.save(PageKeys.STUDENT_PORTAL_INIT, studentPortal = WGU.initApp(webDriver));
-                scenarioContext.save(PageKeys.WGU_INIT, WGU.initApp(webDriver));
-            case "csu":
-                scenarioContext.save(PageKeys.STUDENT_PORTAL_INIT, studentPortal = CSU.initApp(webDriver));
-                scenarioContext.save(PageKeys.CSU_INIT, CSU.initApp(webDriver));
-            case "ftk":
-                scenarioContext.save(PageKeys.STUDENT_PORTAL_INIT, studentPortal = FTK.initApp(webDriver));
-                scenarioContext.save(PageKeys.FTK_INIT, FTK.initApp(webDriver));
-            case "hrz":
-                scenarioContext.save(PageKeys.STUDENT_PORTAL_INIT, studentPortal = HRZ.initApp(webDriver));
-                scenarioContext.save(PageKeys.HRZ_INIT, HRZ.initApp(webDriver));
+        if (CI_MODE.equalsIgnoreCase(System.getProperty("runMode"))) {
+            webDriver = DriverFactory.openBrowser("--no-sandbox", "headless", "--start-maximized", "--disable-notifications");
+        } else {
+            webDriver = DriverFactory.openBrowser("--start-maximized", "--disable-notifications");
         }
+        scenarioContext.save(PageKeys.OPEN_DRIVER, webDriver);
+        scenarioContext.save(PageKeys.GOODREADS_INIT, Goodreads.initApp(webDriver));
     }
 
     @After
     public void closeBrowser(Scenario scenario) {
-        if (scenario.getStatus().is(Status.FAILED)) {
-            // FIXME: 1/28/2020 add file png in log
-            scenario.embed(((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES), "image/png");
+        if (scenario.isFailed()) {
+            scenario.embed(((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES), "image/png", scenario.getName());
             logger.info("Screenshot was taken");
         }
         DriverFactory.closeBrowser(webDriver);

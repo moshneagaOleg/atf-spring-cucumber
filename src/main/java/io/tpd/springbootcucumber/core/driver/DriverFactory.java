@@ -81,7 +81,6 @@ public class DriverFactory {
      */
     private static void setCustomDriverSettings(WebDriver driver) {
         driver.manage().window().maximize();
-        // FIXME: 2/4/2020 from config
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         driver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
         driver.manage().timeouts().setScriptTimeout(120, TimeUnit.SECONDS);

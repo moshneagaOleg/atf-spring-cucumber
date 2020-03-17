@@ -1,107 +1,111 @@
 package io.tpd.springbootcucumber.core.element;
 
+import io.tpd.springbootcucumber.core.exceptions.SLException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.hamcrest.Matchers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.WebElement;
 
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.function.Supplier;
 
+import static io.tpd.springbootcucumber.Config.SMALL_WAIT_TIMEOUT;
+import static io.tpd.springbootcucumber.core.assertation.VTFAssert.assertThat;
+import static io.tpd.springbootcucumber.core.util.WaitUtils.waitUntilCondition;
+import static java.lang.String.format;
+import static org.hamcrest.Matchers.*;
+
+@Slf4j
 public class WebCustomSelect extends WebTypifiedElement {
 
     public WebCustomSelect(WebElement wrappedElement) {
         super(wrappedElement);
     }
 
+    private Supplier<Boolean> selectIsOpened = () -> {
+        if (!getOptions().get(0).isDisplayed()) {
+            click();
+            return false;
+        }
+        return true;
+    };
+
     public List<WebElement> getOptions() {
         return getWrappedElement().findElements(By.xpath("..//following-sibling::ul/li"));
     }
 
-    // FIXME: 2/8/2020 uncomment
     public void shouldNotHave(String option) {
-//        WaitUtils.waitUntilCondition(this::isPresent, true, 5);
-        List<WebElement> options = getWrappedElement().findElements(By.xpath("//button/following-sibling::ul/li"));
+        waitUntilCondition(this::isPresent, true, SMALL_WAIT_TIMEOUT);
+        List<WebElement> options = getOptions();
         click();
         Object[] innerTexts = options.stream().map(element -> element.getAttribute("innerText")).toArray();
-//        assertThat("The searched value should not be present in dropdown",
-//                innerTexts, Matchers.not(Matchers.arrayContaining(option)));
-
+        assertThat("The searched value should not be present in dropdown",
+                innerTexts, not(arrayContaining(option)));
     }
 
-    // FIXME: 2/8/2020 uncomment
     public void selectByVisibleText(String value) {
-//        WaitUtils.waitUntilCondition(this::isPresent, true, 5);
+        waitUntilCondition(this::isPresent, true, SMALL_WAIT_TIMEOUT);
         String initValue = getText().trim();
-//        log.info("Select '{}' with option '{}'", getName(), value);
-//        loggingAssert.assertTrue(!StringUtils.isBlank(value), String.format("required option for '%s' is not empty", getName()));
-//        loggingAssert.assertMoreThanZero(getOptions().size(), String.format("'%s' element contains options", getName()));
-        click();
-        if (!getOptions().get(0).isDisplayed()) {
-            click();
-        }
+        log.info("Select '{}' element with option '{}'", getName(), value);
+        assertThat(format("required option for '%s' is not empty", getName()),
+                value, not(emptyOrNullString()));
+        assertThat(format("element '%s' contains options", getName()),
+                getOptions().size(), greaterThan(0));
+        waitUntilCondition(selectIsOpened, Matchers.is(true), SMALL_WAIT_TIMEOUT);
         for (WebElement element : getOptions()) {
             if (StringUtils.equals(value, element.getText().trim())) {
                 element.click();
+                break;
             }
         }
         if (StringUtils.equals(getText().trim(), initValue) && !StringUtils.equals(initValue, value)) {
-//            throw new StraighterLineException(String.format("Value: '%s' was not selected", value));
+            throw new SLException(format("Value: '%s' was not selected", value));
         }
-//        loggingAssert.assertEquals(getText().trim(), value, "Option was selected right");
+        assertThat("Option was selected correctly", getText().trim(), equalTo(value));
     }
 
-    // FIXME: 2/8/2020 uncomment
     public String selectRandom(int startIndex) {
-//        WaitUtils.waitUntilCondition(this::isPresent, true, 5);
+        waitUntilCondition(this::isPresent, true, SMALL_WAIT_TIMEOUT);
         String initValue = getText().trim();
-//        log.info("Select '{}' with random option", getName());
+        log.info("Select '{}' with random option", getName());
         click();
         if (!getOptions().get(0).isDisplayed()) {
             click();
         }
         List<WebElement> options = getOptions();
-//        loggingAssert.assertTrue(options.size() > 0, "More than 0 options to select");
+        assertThat("More than 0 options to select → drop down is not empty", options.size(),
+                greaterThan(0));
         SecureRandom random = new SecureRandom();
         int index;
-        String value = null;
+        String valueToBeSelected = null;
         WebElement option = null;
-        while (StringUtils.isBlank(value)) {
+        while (StringUtils.isBlank(valueToBeSelected)) {
             index = random.nextInt(options.size() - startIndex) + startIndex;
             option = options.get(index);
-            value = option.getText();
-//            log.info("One more attempt to select value");
+            valueToBeSelected = option.getText();
+            log.info("One more attempt to select value");
         }
-        if (!getOptions().get(0).isDisplayed()) {
-            click();
-        }
-//        log.info("Try to select '{}'", value);
-//        Helpers.scrollToElement(CustomDriver.getInstance(), option);
-//        Helpers.scrollToElement(getDriver(), option);
-
+        waitUntilCondition(selectIsOpened, is(true), SMALL_WAIT_TIMEOUT);
+        log.info("Try to select '{}'", valueToBeSelected);
+        scrollTo(option);
         try {
             option.click();
         } catch (ElementClickInterceptedException e) {
-            selectByVisibleText(value);
+            selectByVisibleText(valueToBeSelected);
         }
 
-        if (StringUtils.equals(initValue, value)) {
-//            throw new StraighterLineException(String.format("Value: '%s' was not selected", value));
+        if (StringUtils.equals(initValue, valueToBeSelected)) {
+            throw new SLException(format("Value: '%s' was not selected", valueToBeSelected));
         }
-        return value;
-    }
-
-    public void checkCurrentValue(String value) {
-//        loggingAssert.assertEquals(getPlaceholder(), value, String.format("Check current value for '%s'", getName()));
+        assertThat("Option was selected right", getText().trim(), equalTo(valueToBeSelected));
+        return valueToBeSelected;
     }
 
     public String getPlaceholder() {
         return findElement(By.xpath("./span")).getText().trim();
-    }
-
-    public void verifyPlaceholder(String expectedValue, int timeout) {
-//        Helpers.waitUntilCondition(() -> getPlaceholder().equals(expectedValue), true, timeout);
-//        log.info(String.format("Check current value for '%s'", getName()));
     }
 
 }

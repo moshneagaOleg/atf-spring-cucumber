@@ -1,44 +1,19 @@
 spring:
   profiles:
-    active: wgu
+    active: goodreads
 ---
-env.name: qa
+env.name: www
 ---
 browser: chrome
 ---
-spring:
-  profiles: wgu
-datasource:
-  name: Western Government University
-  url: https://${env.name}.academy.wgu.edu
+run.from: local
 ---
 spring:
-  profiles: csu
+  profiles: goodreads
 datasource:
-  name: Colorado University
-  url: https://${env.name}.csuglobalbridge.straighterline.com
----
-spring:
-  profiles: ftk
-datasource:
-  name: Fastrack
-  url: https://${env.name}.brighthorizons.straighterline.net
----
-spring:
-  profiles: hrz
-datasource:
-  name: Horizont
-  url: https://${env.name}.horizons.straighterline.net
----
-spring:
-  profiles: feature
-datasource:
-  name: Feature
-  url: https://${env.name}.feat.brighthorizons.straighterline.net
-#  env.name = en-13220
----
-basicUser: auto+do-not-touch-this-user@straighterline.com
-commonPassword: Secretpwd@1
+  name: Goodreads
+  uri: goodreads.com
+  url: https://${env.name}.${datasource.uri}
 ---
 elementWait: 5
 pageLoadWait: 120

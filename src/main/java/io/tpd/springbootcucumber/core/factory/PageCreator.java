@@ -1,7 +1,7 @@
 package io.tpd.springbootcucumber.core.factory;
 
 import io.tpd.springbootcucumber.core.annotations.PageAccessor;
-import io.tpd.springbootcucumber.core.exceptions.VTFException;
+import io.tpd.springbootcucumber.core.exceptions.SLException;
 import io.tpd.springbootcucumber.core.page.AbstractPage;
 import io.tpd.springbootcucumber.core.page.Page;
 import io.tpd.springbootcucumber.core.util.ReflectionUtils;
@@ -14,9 +14,8 @@ import java.util.Map;
 
 @Setter
 public class PageCreator {
-
-    public String baseUrl;
     private final WebDriver driver;
+    private String baseUrl;
     private Map<Class<? extends AbstractPage>, Page> cache;
 
     public PageCreator(WebDriver driver, String baseUrl) {
@@ -25,6 +24,7 @@ public class PageCreator {
     }
 
     public <T extends AbstractPage> T createPage(String pageName) {
+        @SuppressWarnings("unchecked")
         Class<T> page = (Class<T>) PageScanner.getPageByName(pageName);
         return createPage(page);
     }
@@ -36,7 +36,7 @@ public class PageCreator {
             String fullUrl = baseUrl + StringUtil.addSlash(pageAccessor.url());
             return ReflectionUtils.newInstance(type, this.driver, fullUrl, pageAccessor.name());
         } else {
-            throw new VTFException("Class of type [" + type + "] is not a page object.\r\nMissing annottion " + "PageAccessor annotation");
+            throw new SLException("Class of type [" + type + "] is not a page object.\r\nMissing annotation [PageAccessor] annotation");
         }
     }
 
